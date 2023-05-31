@@ -6,43 +6,73 @@
     <!-- <el-divider /> -->
     <!-- 表格 -->
     <div class="tableStyle">
-      <el-table v-loading="loading" :data="configList" stripe border :max-height="650">
+      <el-table
+        v-loading="loading"
+        :data="configList"
+        stripe
+        border
+        :max-height="650"
+      >
         <el-table-column prop="id" label="ID" align="center" />
         <el-table-column prop="use_order_no" label="订单号" align="center" />
         <el-table-column prop="coin_type" label="币种" align="center" />
-        <el-table-column prop="net_type" label="协议" width="220" align="center" />
-        <el-table-column prop="wallet_address" label="钱包地址" align="center" />
-        <el-table-column prop="use_username" label="使用中的用户" width="200" align="center" />
-        <el-table-column prop="apply_num" label="申请金额" width="200" align="center" />
-        <el-table-column prop="rate_change_num" label="汇率充值金额" width="200" align="center" />
+        <el-table-column
+          prop="net_type"
+          label="协议"
+          width="220"
+          align="center"
+        />
+        <el-table-column
+          prop="wallet_address"
+          label="钱包地址"
+          align="center"
+        />
+        <el-table-column
+          prop="use_username"
+          label="使用中的用户"
+          width="200"
+          align="center"
+        />
+        <el-table-column
+          prop="apply_num"
+          label="申请金额"
+          width="200"
+          align="center"
+        />
+        <el-table-column
+          prop="rate_change_num"
+          label="汇率充值金额"
+          width="200"
+          align="center"
+        />
       </el-table>
     </div>
     <!-- 底下固定栏 -->
     <div class="page-fixed-static">
-      <div class="rows">
-        总计有{{ addressText }}个地址冻结中
-      </div>
-
+      <div class="rows">总计有{{ addressText }}个地址冻结中</div>
     </div>
     <!-- 分页 -->
     <div class="list-common-bars">
-      <pagination :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.page_size" @pagination="getList" />
+      <pagination
+        :total="total"
+        :page.sync="listQuery.page"
+        :limit.sync="listQuery.page_size"
+        @pagination="getList"
+      />
     </div>
-
   </div>
 </template>
 
 <script>
-import { useWalletAddressList } from '@/api/theme/order/rate'
-import Pagination from '@/components/Pagination'
-import SearchForm from './components/SearchForm'
+import { useWalletAddressList } from "@/api/theme/order/rate";
+import Pagination from "@/components/Pagination";
+import SearchForm from "./components/SearchForm";
 
 export default {
   // name: 'Wallet',
   components: {
     SearchForm,
     Pagination
-
   },
   props: {},
   data() {
@@ -54,22 +84,22 @@ export default {
         page: 1,
         page_size: 10
       },
-      addressText: '',
+      addressText: "",
       // 使用中的钱包
       userWalletList: {},
       // 钱包综合的数据
       configList: []
-    }
+    };
   },
 
   computed: {},
 
   watch: {},
 
-  created() { },
+  created() {},
 
   mounted() {
-    this.getList()
+    this.getList();
   },
 
   methods: {
@@ -78,38 +108,38 @@ export default {
       this.listQuery = {
         page: 1,
         page_size: 10
-      }
-      this.getList()
+      };
+      this.getList();
     },
     // 搜索
     handleQuery(param) {
       this.listQuery = {
         page: 1,
         page_size: 10
-      }
-      this.listQuery = Object.assign(this.listQuery, param)
-      this.getList()
+      };
+      this.listQuery = Object.assign(this.listQuery, param);
+      this.getList();
     },
     // 使用中的钱包
     getList() {
-      this.loading = true
-      useWalletAddressList({ ...this.listQuery }).then(response => {
-        if (response.status === 200) {
-          const data = response.data || []
+      this.loading = true;
+      useWalletAddressList({ ...this.listQuery })
+        .then(response => {
+          if (response.status === 200) {
+            const data = response.data || [];
 
-          this.configList = data.data
-          this.addressText = response.frozen_account
-          this.total = data.total
-          this.loading = false
-        }
-      })
-        .catch(() => {
-          this.loading = false
+            this.configList = data.data;
+            this.addressText = response.frozen_account;
+            this.total = data.total;
+            this.loading = false;
+          }
         })
+        .catch(() => {
+          this.loading = false;
+        });
     }
-
   }
-}
+};
 </script>
 <style lang="scss" scoped>
 .walletStyle {
@@ -122,7 +152,7 @@ export default {
     padding: 0 25px;
     // height: calc(100vh - 320px);
     // overflow-y: auto;
-     margin-bottom: 150px;
+    margin-bottom: 150px;
 
     .rowStyle {
       text-align: right;
@@ -145,7 +175,6 @@ export default {
     .rows {
       margin-bottom: 5px;
     }
-
   }
 
   .list-common-bars {
@@ -158,12 +187,10 @@ export default {
     height: 52px;
     line-height: 52px;
     transition: left 0.28s;
-
   }
 
   /deep/.el-pagination {
     padding-top: 13px;
   }
-
 }
 </style>

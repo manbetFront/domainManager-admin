@@ -1,26 +1,21 @@
 <template>
-  <div class="title"> 欢迎访问 出入款后台管理系统 </div>
+  <div class="title">欢迎访问 域名管理后台</div>
 </template>
 
 <script>
-
 export default {
   name: "Index",
-  components: {
-
-  },
+  components: {},
   data() {
     return {};
   },
-  methods: {
-
-  },
+  methods: {}
 };
 </script>
 
 <style lang="scss" scoped>
 .title {
-  padding:20px;
+  padding: 20px;
   text-align: left;
 }
 </style>

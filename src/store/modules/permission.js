@@ -3,11 +3,11 @@ import { getRouters } from "@/api/menu";
 import Layout from "@/layout/index";
 
 const _routerData = [
+  // 域名管理
   {
-    path: "/bind",
+    path: "/domainAdmin",
     component: Layout,
-    redirect: "noredirect",
-    name: "Bind",
+    name: "DomainAdmin",
     alwaysShow: true,
     meta: {
       title: "域名管理",
@@ -15,120 +15,58 @@ const _routerData = [
     },
     children: [
       {
-        path: "card",
-        component: "bind-card/index",
-        name: "BindCard",
-        meta: { title: "推广域名设置", icon: "example" }
+        path: "promotion",
+        component: "domainAdmin/promotion",
+        name: "DomainPromotion",
+        meta: { title: "推广域名设置", icon: "example", hasBadge: 3 }
       },
       {
-        path: "GCash",
-        component: "bind-gcash/index",
-        name: "BindGCash",
+        path: "jumpmain",
+        component: "domainAdmin/jumpmain",
+        name: "DomainJumpmain",
         meta: { title: "跳转域名设置", icon: "example" }
-      }
-    ]
-  },
-  // 虚拟币管理
-  {
-    path: "/virtualAdmin",
-    component: Layout,
-    name: "VirtualAdmin",
-    alwaysShow: true,
-    meta: {
-      title: "虚拟币管理",
-      icon: "list"
-    },
-    children: [
-      {
-        path: "rate",
-        component: "virtualAdmin/rate/index",
-        name: "Rate",
-        meta: { title: "汇率管理", icon: "example", hasBadge: 1 }
       },
       {
-        path: "wallet",
-        component: "virtualAdmin/wallet",
-        name: "Wallet",
-        meta: { title: "钱包管理", icon: "example", hasBadge: 2 }
-      },
-      {
-        path: "address",
-        component: "virtualAdmin/address",
-        name: "Address",
-        meta: { title: "使用中地址查询", icon: "example" }
-      },
-      {
-        path: "extractMoneyOne",
-        component: "virtualAdmin/extractMoneyOne",
-        name: "ExtractMoneyOne",
-        meta: { title: "虚拟币提现一审", icon: "example" }
-      },
-      {
-        path: "extractMoneyRecord",
-        component: "virtualAdmin/extractMoneyRecord",
-        name: "ExtractMoneyRecord",
-        meta: { title: "虚拟币取款记录", icon: "example" }
-      }
-    ]
-  },
-  // 订单管理
-  {
-    path: "/orderAdmin",
-    component: Layout,
-    name: "OrderAdmin",
-    alwaysShow: true,
-    meta: {
-      title: "订单管理",
-      icon: "list"
-    },
-    children: [
-      {
-        path: "virtualOrder",
-        component: "orderAdmin/virtualOrder",
-        name: "VirtualOrder",
-        meta: { title: "虚拟币订单审核", icon: "example", hasBadge: 3 }
-      },
-      {
-        path: "virtualOrderHistory",
-        component: "orderAdmin/virtualOrderHistory",
-        name: "VirtualOrderHistory",
-        meta: { title: "虚拟币支付历史记录", icon: "example" }
-      },
-      {
-        path: "payMoneyRecord",
-        component: "orderAdmin/payMoneyRecord",
-        name: "PayMoneyRecord",
-        meta: { title: "支付金额变更记录", icon: "example", hasBadge: 4 }
+        path: "handle",
+        component: "domainAdmin/handle",
+        name: "DomainHandle",
+        meta: { title: "域名操作日志", icon: "example", hasBadge: 4 }
       }
     ]
   },
 
+  // 域名流量查询
   {
-    path: "/order",
+    path: "/domainQuery",
     component: Layout,
-    redirect: "noredirect",
-    name: "SelfMerchant",
+    name: "DomainQuery",
     alwaysShow: true,
     meta: {
-      title: "自有商户",
+      title: "域名流量查询",
       icon: "list"
     },
     children: [
       {
-        path: "pay_check",
-        component: "self-merchant/pay-check/index",
-        name: "PayCheck",
-        meta: { title: "支付审核", icon: "example", hasBadge: 5 }
+        path: "flowprofile",
+        component: "domainQuery/flowprofile/index",
+        name: "Flowprofile",
+        meta: { title: "域名流量概览", icon: "example", hasBadge: 1 }
       },
       {
-        path: "pay_check_record",
-        component: "self-merchant/pay-check-record/index",
-        name: "PayCheckRecord",
-        meta: { title: "支付审核记录", icon: "example" }
+        path: "lockdown",
+        component: "domainQuery/lockdown",
+        name: "Lockdown",
+        meta: { title: "域名封锁预警", icon: "example", hasBadge: 2 }
+      },
+      {
+        path: "log",
+        component: "domainQuery/log",
+        name: "Log",
+        meta: { title: "域名封锁预警日志", icon: "example" }
       }
     ]
   },
-
+  // 系统管理
   {
     path: "/system",
     component: Layout,
@@ -206,7 +144,6 @@ function filterRouter(all, now) {
   now.forEach(element => {
     let _obj = {};
     all.forEach(route => {
-      console.log(element, route);
       if (element.url === route.name) {
         // if (element.name == route.name) {
         if (route.component) {
