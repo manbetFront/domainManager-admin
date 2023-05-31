@@ -1,1 +1,0 @@
-# domainManager-admin
