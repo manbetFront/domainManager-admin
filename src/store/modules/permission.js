@@ -10,7 +10,7 @@ const _routerData = [
     name: "Bind",
     alwaysShow: true,
     meta: {
-      title: "自由卡绑定",
+      title: "域名管理",
       icon: "list"
     },
     children: [
@@ -18,13 +18,13 @@ const _routerData = [
         path: "card",
         component: "bind-card/index",
         name: "BindCard",
-        meta: { title: "银行卡", icon: "example" }
+        meta: { title: "推广域名设置", icon: "example" }
       },
       {
         path: "GCash",
         component: "bind-gcash/index",
         name: "BindGCash",
-        meta: { title: "GCash", icon: "example" }
+        meta: { title: "跳转域名设置", icon: "example" }
       }
     ]
   },
@@ -206,6 +206,7 @@ function filterRouter(all, now) {
   now.forEach(element => {
     let _obj = {};
     all.forEach(route => {
+      console.log(element, route);
       if (element.url === route.name) {
         // if (element.name == route.name) {
         if (route.component) {
