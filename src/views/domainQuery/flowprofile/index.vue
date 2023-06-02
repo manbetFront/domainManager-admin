@@ -2,7 +2,7 @@
   <div class="walletStyle">
     <FilterForm @submit="handleQuery" />
     <div class="tableStyle">
-      <el-row class="rowStyle">
+      <!-- <el-row class="rowStyle">
         <el-button
           type="primary"
           icon="el-icon-plus"
@@ -11,78 +11,21 @@
         >
           新增
         </el-button>
-      </el-row>
+      </el-row> -->
       <el-table v-loading="loading" :data="configList" border :max-height="650">
-        <el-table-column label="ID" align="center" prop="id" />
+        <el-table-column label="代理线" align="center" prop="id" />
         <el-table-column
-          label="充值币种"
+          label="推广域名"
           align="center"
           prop="deposit_coin_type"
         />
         <el-table-column
-          label="兑换币种"
+          label="域名备注"
           align="center"
           prop="change_coin_type"
         />
-        <el-table-column
-          label="允许实时汇率区间"
-          align="center"
-          prop="currency"
-        >
-          <template slot-scope="scope">
-            <span>{{ scope.row.min_range + "-" + scope.row.max_range }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column
-          label="手动默认汇率"
-          align="center"
-          prop="default_num"
-        />
-        <el-table-column label="实时汇率" align="center" prop="time_rate">
-          <!-- <template slot-scope="scope">
-          <span>{{ $toThousands(scope.row.notice_amount) }}</span>
-        </template> -->
-        </el-table-column>
-        <el-table-column label="模式" align="center">
-          <template slot-scope="scope">
-            <span>{{ scope.row.user_type == 1 ? "手动" : "自动" }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="状态" align="center">
-          <template slot-scope="scope">
-            <span>{{ scope.row.status == 1 ? "上架" : "下架" }}</span>
-          </template>
-        </el-table-column>
-
-        <el-table-column
-          label="操作"
-          align="center"
-          fixed="right"
-          width="200px"
-        >
-          <template slot-scope="scope">
-            <el-button
-              v-hasPermi="['system:config:edit']"
-              size="mini"
-              @click="handleUpdateStatus(scope.row)"
-              >{{ scope.row.status === 2 ? "上架" : "下架" }}</el-button
-            >
-            <el-button
-              v-hasPermi="['system:config:edit']"
-              size="mini"
-              type="primary"
-              @click="handleAdd(scope.row)"
-              >编辑
-            </el-button>
-            <el-button
-              v-hasPermi="['system:config:edit']"
-              type="danger"
-              size="mini"
-              @click="handleDel(scope.row)"
-              >删除
-            </el-button>
-          </template>
-        </el-table-column>
+        <el-table-column label="日访问量" align="center" prop="default_num" />
+        <el-table-column label="日注册量" align="center" prop="time_rate" />
       </el-table>
     </div>
     <!-- 分页 -->
@@ -95,21 +38,21 @@
       />
     </div>
     <!-- 添加或修改参数配置对话框 -->
-    <create-form ref="createForm" />
+    <!-- <create-form ref="createForm" /> -->
   </div>
 </template>
 
 <script>
 import Pagination from "@/components/Pagination";
 import { rateList, rateHighLow, rateDelete } from "@/api/theme/order/rate";
-import CreateForm from "./components/CreateForm.vue";
+// import CreateForm from "./components/CreateForm.vue";
 import FilterForm from "./components/FilterForm.vue";
 
 export default {
   components: {
     FilterForm,
-    Pagination,
-    CreateForm
+    Pagination
+    // CreateForm
   },
   data() {
     return {

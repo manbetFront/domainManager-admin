@@ -1,11 +1,11 @@
 <template>
   <div class="walletStyle">
     <!-- 搜索框 -->
-    <search-form
+    <!-- <search-form
       @submit="handleQuery"
       @resetQuery="resetQuery"
       @handleExport="handleExport"
-    />
+    /> -->
     <!-- 表格 -->
     <div class="tableStyle">
       <el-table
@@ -15,71 +15,23 @@
         border
         :max-height="650"
       >
-        <el-table-column prop="id" label="ID" align="center" />
-        <el-table-column prop="coin_type" label="币种" align="center" />
-        <el-table-column prop="net_type" label="协议" align="center" />
+        <el-table-column prop="id" label="警报时间" align="center" />
+        <el-table-column prop="coin_type" label="代理线" align="center" />
+        <el-table-column prop="net_type" label="域名地址" align="center" />
         <el-table-column
           prop="wallet_address"
-          label="钱包地址"
+          label="域名备注"
           width="220"
           align="center"
         />
-        <el-table-column prop="balance" label="余额" align="center" />
-        <el-table-column
-          prop="remark"
-          label="备注"
-          width="200"
-          align="center"
-        />
-        <el-table-column label="用户使用状态" align="center" width="120">
-          <template slot-scope="scope">
-            <span>{{ scope.row.use_status == 1 ? "闲置" : "冻结" }}</span>
-          </template>
-        </el-table-column>
+        <el-table-column prop="balance" label="警报原因" align="center" />
+
         <el-table-column label="状态" align="center" width="120">
           <template slot-scope="scope">
             <span>{{ scope.row.status == 1 ? "上架" : "下架" }}</span>
           </template>
         </el-table-column>
-        <el-table-column fixed="right" label="操作" width="220" align="center">
-          <template slot-scope="scope">
-            <el-button
-              type="text"
-              size="small"
-              :disabled="scope.row.use_status === 2"
-              @click="carryMoney(scope.row)"
-              >提现</el-button
-            >
-            <el-button
-              type="text"
-              size="mini"
-              :disabled="scope.row.use_status === 2"
-              @click="handleUpdateStatus(scope.row)"
-              >{{ scope.row.status === 2 ? "上架" : "下架" }}</el-button
-            >
-            <el-button
-              type="text"
-              size="small"
-              :disabled="scope.row.use_status === 2"
-              @click="handleEdit(scope.row)"
-              >编辑</el-button
-            >
-            <el-button
-              type="text"
-              size="small"
-              :disabled="scope.row.use_status === 2"
-              @click="handleDel(scope.row)"
-              >删除</el-button
-            >
-          </template>
-        </el-table-column>
       </el-table>
-    </div>
-    <!-- 底下固定栏 -->
-    <div class="page-fixed-static">
-      <div class="rows">USDT 钱包总余额 : {{ walletData.balance_total }}</div>
-      <div class="rows">USDT TRC :{{ walletData.trc_total }}</div>
-      <div class="rows">USDT ERC : {{ walletData.erc_total }}</div>
     </div>
     <!-- 分页 -->
     <div class="list-common-bars">
@@ -91,9 +43,9 @@
       />
     </div>
     <!-- 编辑 -->
-    <edit-dialog ref="editDialog" />
+    <!-- <edit-dialog ref="editDialog" /> -->
     <!-- 提现 -->
-    <carry-dialog ref="carryDialog" />
+    <!-- <carry-dialog ref="carryDialog" /> -->
   </div>
 </template>
 

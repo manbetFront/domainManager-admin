@@ -15,108 +15,60 @@
         border
         :max-height="650"
       >
-        <el-table-column label="序号" width="80" type="index" align="center" />
+        <!-- <el-table-column label="序号" width="80" type="index" align="center" /> -->
         <el-table-column
           prop="order_id"
-          label="订单号"
+          label="代理线"
           width="180"
           align="center"
         />
-        <el-table-column label="区域链订单号" width="180" align="center">
-          <template slot-scope="scope">
-            <div
-              style="text-decoration: underline;cursor:pointer;color:#328DFF"
-              @click.self="toUrl(scope.row.transaction_info)"
-            >
-              {{ scope.row.trade_no }}
-            </div>
-            <!-- {{ '点击地址跳转' }} -->
-          </template>
-        </el-table-column>
+
         <el-table-column
           prop="username"
-          label="会员账号"
+          label="跳转域名"
           width="220"
           align="center"
         />
         <el-table-column
-          prop="apply_num"
-          label="申请金额"
+          prop="username"
+          label="域名备注"
           width="220"
           align="center"
         />
-        <el-table-column
-          prop="apply_coin_type"
-          label="申请币种"
-          width="180"
-          align="center"
-        />
-        <el-table-column prop="rate" label="汇率" width="180" align="center" />
-        <el-table-column
-          prop="rate_num"
-          label="汇率充值金额"
-          width="180"
-          align="center"
-        />
-        <el-table-column
-          prop="real_num"
-          label="实际充值金额"
-          width="180"
-          align="center"
-        />
-        <el-table-column
-          prop="coin_type"
-          label="充值币种"
-          width="180"
-          align="center"
-        />
-        <el-table-column
-          prop="net_type"
-          label="虚拟币协议"
-          width="180"
-          align="center"
-        />
+
         <el-table-column
           prop="created_at"
-          label="订单提交时间"
+          label="创建时间"
           width="180"
           align="center"
         />
         <el-table-column
           prop="withdraw_from"
-          label="存款人地址"
+          label="到期时间"
           width="180"
           align="center"
         />
         <el-table-column
           prop="withdraw_address"
-          label="收款地址"
-          width="180"
-          align="center"
-        />
-        <!-- 历史记录才有的字段 -->
-        <el-table-column
-          prop="operation_name"
-          label="操作人"
-          width="180"
-          align="center"
-        />
-        <el-table-column
-          prop="remark"
-          label="备注"
-          width="180"
-          align="center"
-        />
-        <!-- end== -->
-        <el-table-column
-          fixed="right"
-          prop="status"
-          label="收款状态"
-          width="180"
+          label="状态"
+          width="120"
           align="center"
         >
-          <template slot-scope="{ row }">
-            {{ getStatus(row.status) }}
+          <el-switch
+            v-model="value"
+            active-color="#13ce66"
+            inactive-color="#ff4949"
+          >
+          </el-switch>
+        </el-table-column>
+        <el-table-column fixed="right" label="操作" width="180" align="center">
+          <template slot-scope="scope">
+            <el-button type="text" size="small" @click="handleCheck(scope.row)"
+              >编辑</el-button
+            >
+            <el-button type="text" size="small" @click="handleEdit(scope.row)"
+              >删除</el-button
+            >
           </template>
         </el-table-column>
       </el-table>

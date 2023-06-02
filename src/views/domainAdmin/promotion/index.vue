@@ -1,14 +1,13 @@
 <template>
   <div class="walletStyle">
     <div class="checkStyle">
-      <!--  style="display: block" -->
-      <el-switch
+      <!-- <el-switch
         v-model="statusDataIf"
         active-color="#13ce66"
         inactive-color="#ff4949"
         inactive-text="自动审核"
         @change="changeBox"
-      />
+      /> -->
     </div>
     <!-- 搜索框 -->
     <search-form @submit="handleQuery" @resetQuery="resetQuery" />
@@ -23,14 +22,9 @@
         border
         :max-height="650"
       >
-        <el-table-column type="index" label="序号" width="80" align="center" />
-        <el-table-column
-          prop="order_id"
-          label="订单号"
-          width="180"
-          align="center"
-        />
-        <el-table-column label="区域链订单号" width="180" align="center">
+        <!-- <el-table-column type="index" label="序号" width="80" align="center" /> -->
+        <el-table-column prop="order_id" label="代理线" align="center" />
+        <el-table-column label="推广域名" align="center">
           <template slot-scope="scope">
             <div
               style="text-decoration: underline;cursor:pointer;color:#328DFF"
@@ -38,68 +32,28 @@
             >
               {{ scope.row.trade_no }}
             </div>
-            <!-- {{ '点击地址跳转' }} -->
           </template>
         </el-table-column>
+        <el-table-column prop="username" label="跳转域名" align="center" />
+        <el-table-column prop="apply_num" label="域名备注" align="center" />
+
         <el-table-column
-          prop="username"
-          label="会员账号"
-          width="220"
-          align="center"
-        />
-        <el-table-column
-          prop="apply_num"
-          label="申请金额"
-          width="220"
-          align="center"
-        />
-        <el-table-column
-          prop="apply_coin_type"
-          label="申请币种"
-          width="180"
-          align="center"
-        />
-        <el-table-column prop="rate" label="汇率" width="180" align="center" />
-        <el-table-column
-          prop="rate_num"
-          label="汇率充值金额"
-          width="180"
-          align="center"
-        />
-        <el-table-column
-          prop="real_num"
-          label="实际充值金额"
-          width="180"
-          align="center"
-        />
-        <el-table-column
-          prop="coin_type"
-          label="充值币种"
-          width="180"
-          align="center"
-        />
-        <el-table-column
-          prop="net_type"
-          label="虚拟币协议"
+          prop="created_at"
+          label="创建时间"
           width="180"
           align="center"
         />
         <el-table-column
           prop="created_at"
-          label="订单提交时间"
+          label="到期时间"
           width="180"
           align="center"
         />
-        <el-table-column
-          prop="withdraw_from"
-          label="存款人地址"
-          width="180"
-          align="center"
-        />
+        <el-table-column prop="created_at" label="总访问量" align="center" />
+        <el-table-column prop="withdraw_from" label="总注册量" align="center" />
         <el-table-column
           prop="withdraw_address"
           label="收款地址"
-          width="180"
           align="center"
         />
         <el-table-column
@@ -109,18 +63,21 @@
           width="180"
           align="center"
         >
-          <template slot-scope="{ row }">
-            {{ getStatus(row.status) }}
-          </template>
+          <el-switch
+            v-model="value"
+            active-color="#13ce66"
+            inactive-color="#ff4949"
+          >
+          </el-switch>
         </el-table-column>
 
         <el-table-column fixed="right" label="操作" width="220" align="center">
           <template slot-scope="scope">
             <el-button type="text" size="small" @click="handleCheck(scope.row)"
-              >审核</el-button
+              >编辑</el-button
             >
             <el-button type="text" size="small" @click="handleEdit(scope.row)"
-              >操作</el-button
+              >删除</el-button
             >
           </template>
         </el-table-column>
@@ -269,15 +226,14 @@ export default {
       }
     },
     // 切换状态
-    changeBox(item) {
-      // console.log(item, '判断对错====')
-      if (item) {
-        this.setStatusData.examine_type = 1;
-      } else {
-        this.setStatusData.examine_type = 2;
-      }
-      this.setStatusType();
-    },
+    // changeBox(item) {
+    //   if (item) {
+    //     this.setStatusData.examine_type = 1;
+    //   } else {
+    //     this.setStatusData.examine_type = 2;
+    //   }
+    //   this.setStatusType();
+    // },
     // 设置审核状态
     async setStatusType() {
       const res = await orderEditStatus(this.setStatusData);

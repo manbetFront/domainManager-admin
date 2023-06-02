@@ -15,97 +15,41 @@
         border
         :max-height="650"
       >
-        <el-table-column label="序号" width="80" type="index" align="center" />
+        <!-- <el-table-column label="序号" width="80" type="index" align="center" /> -->
         <el-table-column
           prop="order_id"
-          label="订单号"
+          label="操作时间"
           width="180"
           align="center"
         />
-        <el-table-column label="区域链订单号" width="180" align="center">
-          <template slot-scope="scope">
-            <div
-              style="text-decoration: underline;cursor:pointer;color:#328DFF"
-              @click.self="toUrl(scope.row.transaction_info)"
-            >
-              {{ scope.row.trade_no }}
-            </div>
-            <!-- {{ '点击地址跳转' }} -->
-          </template>
-        </el-table-column>
         <el-table-column
           prop="username"
-          label="会员账号"
+          label="代理线"
           width="220"
           align="center"
         />
         <el-table-column
           prop="apply_num"
-          label="原申请金额"
+          label="操作域名"
           width="220"
           align="center"
         />
         <el-table-column
           prop="after_apply_num"
-          label="变更后申请金额"
+          label="域名备注"
           width="220"
           align="center"
         />
         <el-table-column
           prop="apply_coin_type"
-          label="申请币种"
+          label="操作内容"
           width="180"
           align="center"
         />
-        <el-table-column prop="rate" label="汇率" width="180" align="center" />
         <el-table-column
+          fixed="right"
           prop="rate_num"
-          label="汇率充值金额"
-          width="180"
-          align="center"
-        />
-        <el-table-column
-          prop="after_rate_num"
-          label="修改后汇率充值金额"
-          width="180"
-          align="center"
-        />
-        <el-table-column
-          prop="real_num"
-          label="实际充值金额"
-          width="180"
-          align="center"
-        />
-        <el-table-column
-          prop="coin_type"
-          label="实际币种"
-          width="180"
-          align="center"
-        />
-        <el-table-column
-          prop="created_at"
-          label="订单提交时间"
-          width="180"
-          align="center"
-        />
-        <el-table-column
-          prop="withdraw_from"
-          label="存款人地址"
-          width="180"
-          align="center"
-        />
-        <!-- 字段待定 -->
-        <!-- <el-table-column prop="apply_coin_type" label="收款方式" width="180" align="center" /> -->
-        <!-- end=== -->
-        <el-table-column
-          prop="net_type"
-          label="虚拟币协议"
-          width="180"
-          align="center"
-        />
-        <el-table-column
-          prop="withdraw_address"
-          label="收款地址"
+          label="操作人"
           width="180"
           align="center"
         />
