@@ -13,36 +13,18 @@
         border
         :max-height="650"
       >
-        <el-table-column prop="id" label="ID" align="center" />
-        <el-table-column prop="use_order_no" label="订单号" align="center" />
-        <el-table-column prop="coin_type" label="币种" align="center" />
+        <el-table-column prop="id" label="变更时间" align="center" />
+        <el-table-column prop="use_order_no" label="状态变更" align="center" />
+        <el-table-column prop="coin_type" label="代理线" align="center" />
         <el-table-column
           prop="net_type"
-          label="协议"
+          label="域名地址"
           width="220"
           align="center"
         />
         <el-table-column
           prop="wallet_address"
-          label="钱包地址"
-          align="center"
-        />
-        <el-table-column
-          prop="use_username"
-          label="使用中的用户"
-          width="200"
-          align="center"
-        />
-        <el-table-column
-          prop="apply_num"
-          label="申请金额"
-          width="200"
-          align="center"
-        />
-        <el-table-column
-          prop="rate_change_num"
-          label="汇率充值金额"
-          width="200"
+          label="域名备注"
           align="center"
         />
       </el-table>
