@@ -266,7 +266,7 @@ export default {
       this.loading = true
       PowerList({ ...this.queryParams })
         .then((response) => {
-          this.configList = response.data.content
+          this.configList = response.data.data
           this.total = response.data.total
           this.loading = false
         })

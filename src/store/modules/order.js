@@ -1,6 +1,8 @@
 import { getOrderNotice } from '@/api/pay-check'
 import { setOrderTopic, getOrderTopic } from '@/utils/auth'
-import { withdrawAddressList, rateList, moneyList, orderList,payChangeRecord } from '@/api/theme/order/rate'
+import { withdrawAddressList, /*rateList,*/ /*moneyList,*/ orderList,payChangeRecord } from '@/api/theme/order/rate'
+import { proExpireList } from '@/api/theme/domain/promotion'
+import { jumpExpireList } from '@/api/theme/domain/jump'
 
 const state = {
   topic: getOrderTopic(),
@@ -43,33 +45,33 @@ const mutations = {
 
 const actions = {
   // 获取支付审核通知
-  fetchOrderNotice({ commit }) {
-    return new Promise((resolve, reject) => {
-      getOrderNotice()
-        .then(res => {
-          const topic = Object.keys(res.data || {})[0]
-          commit('SET_NUMS', res.data[topic])
-          commit('SET_TOPIC', topic)
-          resolve(res)
-        })
-        .catch(error => {
-          reject(error)
-        })
-    })
-  },
-  // 汇率管理
+  // fetchOrderNotice({ commit }) {
+  //   return new Promise((resolve, reject) => {
+  //     getOrderNotice()
+  //       .then(res => {
+  //         const topic = Object.keys(res.data || {})[0]
+  //         commit('SET_NUMS', res.data[topic])
+  //         commit('SET_TOPIC', topic)
+  //         resolve(res)
+  //       })
+  //       .catch(error => {
+  //         reject(error)
+  //       })
+  //   })
+  // },
+  // 快过期推广域名列表
   getNumber1({ commit }) {
-    rateList({ page: 1, page_size: 10 }).then(response => {
-      if (response.status === 200) {
-        commit('SET_NUMS1', response.data.total)
+    proExpireList().then(response => {
+      if (response.code === 200) {
+        commit('SET_NUMS1', response.data.length)
       }
     })
   },
-  // 钱包管理
+  // 快过期跳转域名列表
   getNumber2({ commit }) {
-    moneyList({ page: 1, page_size: 10 }).then(response => {
-      if (response.status === 200) {
-        commit('SET_NUMS2', response.data.total)
+    jumpExpireList().then(response => {
+      if (response.code === 200) {
+        commit('SET_NUMS2', response.data.length)
       }
     })
   },

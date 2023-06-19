@@ -18,19 +18,19 @@ const _routerData = [
         path: "promotion",
         component: "domainAdmin/promotion",
         name: "DomainPromotion",
-        meta: { title: "推广域名设置", icon: "example", hasBadge: 3 }
+        meta: { title: "推广域名设置", icon: "example", hasBadge: 1 }
       },
       {
         path: "jumpmain",
         component: "domainAdmin/jumpmain",
         name: "DomainJumpmain",
-        meta: { title: "跳转域名设置", icon: "example" }
+        meta: { title: "跳转域名设置", icon: "example", hasBadge: 2}
       },
       {
         path: "handle",
         component: "domainAdmin/handle",
         name: "DomainHandle",
-        meta: { title: "域名操作日志", icon: "example", hasBadge: 4 }
+        meta: { title: "域名操作日志", icon: "example"}
       }
     ]
   },
@@ -50,20 +50,20 @@ const _routerData = [
         path: "flowprofile",
         component: "domainQuery/flowprofile/index",
         name: "Flowprofile",
-        meta: { title: "域名流量概览", icon: "example", hasBadge: 1 }
+        meta: { title: "域名流量概览", icon: "example" }
       },
-      {
-        path: "lockdown",
-        component: "domainQuery/lockdown",
-        name: "Lockdown",
-        meta: { title: "域名封锁预警", icon: "example", hasBadge: 2 }
-      },
-      {
-        path: "log",
-        component: "domainQuery/log",
-        name: "Log",
-        meta: { title: "域名封锁预警日志", icon: "example" }
-      }
+      // {
+      //   path: "lockdown",
+      //   component: "domainQuery/lockdown",
+      //   name: "Lockdown",
+      //   meta: { title: "域名封锁预警", icon: "example", hasBadge: 3 }
+      // },
+      // {
+      //   path: "log",
+      //   component: "domainQuery/log",
+      //   name: "Log",
+      //   meta: { title: "域名封锁预警日志", icon: "example" }
+      // }
     ]
   },
   // 系统管理
@@ -97,12 +97,12 @@ const _routerData = [
         name: "SystemMenu",
         meta: { title: "菜单权限", icon: "example" }
       },
-      {
-        path: "extractMoneyAddress",
-        component: "system/extractMoneyAddress",
-        name: "ExtractMoneyAddress",
-        meta: { title: "提现地址设置", icon: "example", hasBadge: 6 }
-      }
+      // {
+      //   path: "extractMoneyAddress",
+      //   component: "system/extractMoneyAddress",
+      //   name: "ExtractMoneyAddress",
+      //   meta: { title: "提现地址设置", icon: "example", hasBadge: 6 }
+      // }
     ]
   }
 ];

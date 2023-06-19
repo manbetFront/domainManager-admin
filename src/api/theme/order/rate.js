@@ -289,7 +289,7 @@ export function getUserSite(obj) {
     ...obj
   }
   return request({
-    url: '/api/block/getUserSite',
+    url: '/api/getUserSite',
     method: 'get',
     params
   })

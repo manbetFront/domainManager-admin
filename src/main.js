@@ -8,7 +8,7 @@ import Element from 'element-ui'
 import './assets/styles/element-variables.scss'
 
 import '@/assets/styles/index.scss' // global css
-import '@/assets/styles/common.scss' // ruoyi css
+// import '@/assets/styles/common.scss' // ruoyi css
 import App from './App'
 import store from './store'
 import router from './router'

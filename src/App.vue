@@ -10,14 +10,6 @@ export default {
 };
 </script>
 <style lang="stylus">
-.el-pagination {
-  padding-top: 20px;
-
-  .el-pagination__total {
-    position: absolute;
-    right: 40px;
-  }
-}
 .point-icon {
   font-size 18px
   &.is-success {

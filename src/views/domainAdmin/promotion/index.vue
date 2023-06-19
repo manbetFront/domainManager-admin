@@ -1,20 +1,21 @@
 <template>
-  <div class="walletStyle">
-    <div class="checkStyle">
-      <!-- <el-switch
-        v-model="statusDataIf"
-        active-color="#13ce66"
-        inactive-color="#ff4949"
-        inactive-text="自动审核"
-        @change="changeBox"
-      /> -->
+<div class="app-container">
+    <div class="list-common-query">
+       <search-form @submit="handleQuery" @resetQuery="resetQuery" />
     </div>
-    <!-- 搜索框 -->
-    <search-form @submit="handleQuery" @resetQuery="resetQuery" />
-    <!-- 分割线 -->
-    <!-- <el-divider /> -->
-    <!-- 表格 -->
-    <div class="tableStyle">
+
+    <el-tabs v-model="tabActive" type="border-card" >
+      <template v-for="(tab, index) in sites">
+        <el-tab-pane
+          :key="index"
+          :name="tab"
+          :label="tab"
+        >
+        </el-tab-pane>
+      </template>
+    </el-tabs>
+
+    <div class="list-common-table">
       <el-table
         v-loading="loading"
         :data="tableData"
@@ -23,60 +24,43 @@
         :max-height="650"
       >
         <!-- <el-table-column type="index" label="序号" width="80" align="center" /> -->
-        <el-table-column prop="order_id" label="代理线" align="center" />
-        <el-table-column label="推广域名" align="center">
-          <template slot-scope="scope">
-            <div
-              style="text-decoration: underline;cursor:pointer;color:#328DFF"
-              @click.self="toUrl(scope.row.transaction_info)"
-            >
-              {{ scope.row.trade_no }}
-            </div>
-          </template>
-        </el-table-column>
-        <el-table-column prop="username" label="跳转域名" align="center" />
-        <el-table-column prop="apply_num" label="域名备注" align="center" />
-
+        <el-table-column prop="agent_group" label="代理线" align="center" />
+        <el-table-column  prop="agent_host" label="推广域名" align="center" width="150"/>
+        <el-table-column prop="main_host" label="跳转域名" align="center" width="150"/>
+        <el-table-column prop="remark" label="域名备注" align="center" width="150"/>
         <el-table-column
           prop="created_at"
           label="创建时间"
-          width="180"
+          width="150"
           align="center"
         />
-        <el-table-column
-          prop="created_at"
-          label="到期时间"
-          width="180"
-          align="center"
-        />
-        <el-table-column prop="created_at" label="总访问量" align="center" />
-        <el-table-column prop="withdraw_from" label="总注册量" align="center" />
-        <el-table-column
-          prop="withdraw_address"
-          label="收款地址"
-          align="center"
-        />
+        <el-table-column label="到期时间" width="150" align="center">
+          <template slot-scope="{ row }">
+            <span v-if="row.near_expire === 1" style="color:#FF0000">{{ row.host_expire_at }}</span>
+            <span v-else>{{ row.host_expire_at }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="uv" label="总访问量" align="center" />
+        <el-table-column prop="register_num" label="总注册量" align="center" />
         <el-table-column
           fixed="right"
           prop="status"
-          label="收款状态"
-          width="180"
+          label="状态"
+          width="100"
           align="center"
         >
-          <el-switch
-            v-model="value"
-            active-color="#13ce66"
-            inactive-color="#ff4949"
-          >
-          </el-switch>
+          <template slot-scope="{ row }">
+            <el-switch v-model="row.status" active-color="#13ce66"
+            :active-value="1" :inactive-value="2" @change="onSwitch(row)" />
+          </template>
         </el-table-column>
 
-        <el-table-column fixed="right" label="操作" width="220" align="center">
+        <el-table-column fixed="right" label="操作" width="160" align="center">
           <template slot-scope="scope">
-            <el-button type="text" size="small" @click="handleCheck(scope.row)"
+            <el-button type="text" size="small" @click="handleEdit(scope.row)"
               >编辑</el-button
             >
-            <el-button type="text" size="small" @click="handleEdit(scope.row)"
+            <el-button type="text" size="small" @click="handleDel(scope.row)"
               >删除</el-button
             >
           </template>
@@ -86,7 +70,14 @@
 
     <!-- 分页 -->
     <div class="list-common-bars">
+      <div class="action-btn fl">
+        <el-button type="primary" @click="openDialog()">
+          新增域名
+        </el-button>
+      </div>
+
       <pagination
+        class="fr"
         :total="total"
         :page.sync="listQuery.page"
         :limit.sync="listQuery.page_size"
@@ -94,173 +85,64 @@
       />
     </div>
     <!-- 编辑 -->
-    <edit-dialog ref="editDialog" />
-    <!-- 提现 -->
-    <carry-dialog ref="carryDialog" />
-    <!-- 通知音效 -->
-    <audio ref="dingdong" preload="metadata" src="~@/assets/dingdong.wav" />
-  </div>
+    <edit-dialog :visible.sync="editDialog" ref="editDialog" />
+</div>
 </template>
 
 <script>
-import mqtt from "mqtt";
 import {
-  orderCheckStatus,
-  orderEditStatus,
-  orderList
-} from "@/api/theme/order/rate";
+  list,
+  update,
+  del
+} from "@/api/theme/domain/promotion";
+import { getSiteData } from '@/utils/auth'
 import Pagination from "@/components/Pagination";
 import SearchForm from "./components/SearchForm";
 import EditDialog from "./components/editDialog";
-import CarryDialog from "./components/carryDialog";
-import { getSiteData } from "@/utils/auth";
 export default {
   // name: 'VirtualOrder',
   components: {
     SearchForm,
     Pagination,
     EditDialog,
-    CarryDialog
   },
   props: {},
   data() {
     return {
       total: 0,
-      setStatusData: {
-        id: "",
-        examine_type: 1
-      },
       listQuery: {
         page: 1,
-        page_size: 10
+        size: 10
       },
       loading: false,
-      statusDataIf: true,
-      // maxHeight: 0,
-      tableData: []
+      tableData: [],
+      editDialog: false,
+      tabActive: "",
     };
   },
 
-  computed: {},
+  computed: {
+    sites(){
+      return Array(getSiteData());
+    }
+  },
 
   watch: {},
 
   created() {},
 
   mounted() {
-    // this.detectMaxHeight()
-    this.getExamineType();
-    // 表格列表
-    this.getList();
-    // 创建mqtt链接
-    this.createConnection();
+    this.tabActive = this.sites[0];
+    this.resetQuery();
   },
 
   methods: {
-    // 跳转链接
-    toUrl(url) {
-      window.open(url);
-    },
-    // detectMaxHeight() {
-    //   this.maxHeight = window.innerHeight - 300
-    // },
-
-    /** 订阅支付审核订单数 */
-    createConnection() {
-      // const { topic } = this.$store.state.order
-      this.client = mqtt.connect("wss://mqtt.kletuzow.com:443/mqtt");
-      // 订阅
-      this.client.on("connect", () => {
-        // console.log(getSiteData(),"===");
-        // `platform=PHmerchantOrderList`
-        this.client.subscribe(
-          `platform=${getSiteData()}merchantOrderList`,
-          error => {
-            if (error) {
-              console.error("Error:", error);
-              return;
-            }
-            console.log("虚拟币订单审核订阅成功");
-          }
-        );
-      });
-      // 回调
-      this.client.on("message", (topic, message) => {
-        const data = JSON.parse(message.toString());
-        console.log(topic, data, "接收回调数据");
-        this.$notify({
-          title: "提示",
-          type: "warning",
-          message: "您有新的虚拟币审核订单，请及时处理"
-        });
-        this.$nextTick(() => {
-          this.$refs["dingdong"].play();
-        });
-        // this.$store.commit('order/SET_NUMS', data)
-        // this.$store.dispatch('order/getNumber3')
-        this.getList();
-      });
-    },
-
-    getStatus(num) {
-      if (num === 1) {
-        return "未到账";
-      }
-      if (num === 2) {
-        return "已到账";
-      }
-      if (num === 3) {
-        return "未匹配";
-      }
-      if (num === 4) {
-        return "成功";
-      }
-      if (num === 5) {
-        return "成功,改过金额";
-      }
-      if (num === 6) {
-        return "超时";
-      }
-      if (num === 7) {
-        return "失败";
-      }
-    },
-    // 切换状态
-    // changeBox(item) {
-    //   if (item) {
-    //     this.setStatusData.examine_type = 1;
-    //   } else {
-    //     this.setStatusData.examine_type = 2;
-    //   }
-    //   this.setStatusType();
-    // },
-    // 设置审核状态
-    async setStatusType() {
-      const res = await orderEditStatus(this.setStatusData);
-      if (res.status !== 200) {
-        return this.$message(res.msg);
-      }
-      this.$message.success("操作成功");
-      this.getExamineType();
-    },
-    async getExamineType() {
-      const res = await orderCheckStatus();
-      if (res.status !== 200) {
-        return this.$message(res.msg);
-      }
-      this.setStatusData.id = res.data[0].id;
-      if (res.data[0].examine_type === 1) {
-        this.statusDataIf = true;
-      } else {
-        this.statusDataIf = false;
-      }
-    },
-
     // 重置操作
     resetQuery() {
       this.listQuery = {
         page: 1,
-        page_size: 10
+        size: 10,
+        platform: this.tabActive,
       };
       this.getList();
     },
@@ -268,7 +150,8 @@ export default {
     handleQuery(param) {
       this.listQuery = {
         page: 1,
-        page_size: 10
+        size: 10,
+        platform: this.tabActive,
       };
       this.listQuery = Object.assign(this.listQuery, param);
       this.getList();
@@ -276,10 +159,10 @@ export default {
     // 查询列表
     getList() {
       this.loading = true;
-      this.$store.dispatch("order/getNumber3");
-      orderList({ ...this.listQuery })
+      this.$store.dispatch("order/getNumber1");
+      list({ ...this.listQuery })
         .then(response => {
-          if (response.status === 200) {
+          if (response.code === 200) {
             const data = response.data || [];
             this.tableData = data.data;
             this.total = data.total;
@@ -292,72 +175,52 @@ export default {
     },
     // 编辑
     handleEdit(rowData) {
-      this.$refs.editDialog.open(rowData);
+      this.editDialog = true;
+      this.$refs.editDialog.open(rowData, this.tabActive);
     },
-    // 审核
-    handleCheck(rowData) {
-      this.$refs.carryDialog.open(rowData);
-    }
+
+    openDialog(){
+      this.editDialog = true;
+      this.$refs.editDialog.open(null, this.tabActive);
+    },
+
+    onSwitch(row) {
+      update({
+       ...row,
+       status: Number(row.status),
+       platform: this.tabActive,
+      }).then(res => {
+        if (res.code === 200) {
+          this.$message.success('编辑成功');
+          this.getList();
+        } else {
+          this.$message.error(res.msg);
+          this.$set(row, 'status', Number(row.status) === 1 ? 2 :1);
+        }
+      })
+    },
+
+    handleDel(rowData){
+      this.$confirm("确认删除该条数据么?", "", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          del({ id: rowData.id, platform: this.tabActive }).then(res => {
+            if (res.code !== 200) {
+              this.$message.error(res.msg);
+              return;
+            }
+            this.$message.success("刪除成功");
+            this.$store.dispatch("order/getNumber1");
+            this.getList();
+          });
+        })
+        .catch(() => {});
+    },
   }
 };
 </script>
 <style lang="scss" scoped>
-.walletStyle {
-  padding: 25px;
-
-  // 自动审核样式
-  .checkStyle {
-    padding: 0 0 20px 0;
-  }
-
-  // height: 100%;
-  min-height: calc(100vh - 84px);
-  padding-top: 20px;
-  position: relative;
-
-  .tableStyle {
-    // padding: 0 20px;
-    // height: calc(100vh - 320px);
-    // overflow-y: auto;
-    margin-bottom: 30px;
-
-    .rowStyle {
-      text-align: right;
-      margin-bottom: 20px;
-    }
-  }
-
-  .page-fixed-static {
-    color: #646566;
-    background-color: #f8fff5;
-    position: absolute;
-    bottom: 52px;
-    left: 0;
-    right: 0;
-    font-size: 14px;
-    z-index: 100;
-    transition: left 0.28s;
-    padding: 15px;
-
-    .rows {
-      margin-bottom: 5px;
-    }
-  }
-
-  .list-common-bars {
-    background-color: #f4f4f4;
-    position: absolute;
-    z-index: 100;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: 52px;
-    line-height: 52px;
-    transition: left 0.28s;
-  }
-
-  /deep/.el-pagination {
-    padding-top: 13px;
-  }
-}
 </style>

@@ -1,14 +1,16 @@
 <template>
-  <!--  class="pagination-container" -->
   <div
-    :class="{ 'hidden': hidden }"
+    :class="{'hidden':hidden}"
+    class="pagination-container"
   >
     <el-pagination
+      :small="small"
       :background="background"
       :current-page.sync="currentPage"
       :page-size.sync="pageSize"
       :layout="layout"
       :page-sizes="pageSizes"
+      :pager-count="pagerCount"
       :total="total"
       v-bind="$attrs"
       @size-change="handleSizeChange"
@@ -23,6 +25,10 @@ import { scrollTo } from '@/utils/scroll-to'
 export default {
   name: 'Pagination',
   props: {
+    small: {
+      type: Boolean,
+      default: false,
+    },
     total: {
       required: true,
       type: Number
@@ -31,16 +37,19 @@ export default {
       type: Number,
       default: 1
     },
-    limit: {
+    size: {
       type: Number,
       default: 10
-      // default: 20
     },
     pageSizes: {
       type: Array,
       default() {
         return [10, 20, 30, 50]
       }
+    },
+    pagerCount: {
+      type: Number,
+      default: 7
     },
     layout: {
       type: String,
@@ -70,26 +79,25 @@ export default {
     },
     pageSize: {
       get() {
-        return this.limit
+        return this.size
       },
       set(val) {
-        this.$emit('update:limit', val)
+        this.$emit('update:size', val)
       }
     }
   },
   methods: {
     handleSizeChange(val) {
-      this.$emit('pagination', { page: this.currentPage, limit: val })
+      this.currentPage = 1
+      this.$emit('pagination', { page: this.currentPage, size: val })
       if (this.autoScroll) {
-        // scrollTo(0, 800)
-        scrollTo(0, 0)
+        scrollTo(0, 800)
       }
     },
     handleCurrentChange(val) {
-      this.$emit('pagination', { page: val, limit: this.pageSize })
+      this.$emit('pagination', { page: val, size: this.pageSize })
       if (this.autoScroll) {
-        // scrollTo(0, 800)
-        scrollTo(0, 0)
+        scrollTo(0, 800)
       }
     }
   }
@@ -97,12 +105,10 @@ export default {
 </script>
 
 <style scoped>
-.pagination-container-1 {
+/* .pagination-container {
   background: #fff;
-  /* padding: 32px 16px; */
-  padding: 28px 16px;
-}
-
+  padding: 32px 16px;
+} */
 .pagination-container.hidden {
   display: none;
 }

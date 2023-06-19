@@ -1,14 +1,16 @@
 <template>
   <div>
     <el-form ref="queryForm" :model="form" :inline="true" label-width="80px">
-      <el-form-item label="域名搜索">
-        <el-input
-          v-model="form.name"
-          placeholder="请输入域名或代理线"
-        ></el-input>
+      <el-form-item label="代理线">
+        <el-input v-model="form.agent_group" placeholder="请输入代理线"></el-input>
+      </el-form-item>
+      <el-form-item label="域名">
+        <el-input v-model="form.url" placeholder="请输入域名" style="width: 250px;"></el-input>
       </el-form-item>
       <el-form-item label="日期选择">
-        <el-date-picker v-model="value1" type="date" placeholder="选择日期">
+        <el-date-picker v-model="form.info_date" type="date" 
+          placeholder="选择日期"  format="yyyy-MM-dd"
+          value-format="yyyy-MM-dd">
         </el-date-picker>
       </el-form-item>
 
@@ -34,19 +36,10 @@ export default {
   data() {
     return {
       form: {
-        status: ""
+        agent_group: "",
+        url: "",
+        info_date: "",
       },
-      bankList: [],
-      statusOptions: [
-        {
-          label: "上架",
-          value: "1"
-        },
-        {
-          label: "下架",
-          value: "2"
-        }
-      ]
     };
   },
   created() {
@@ -58,7 +51,9 @@ export default {
     },
     resetQuery() {
       this.form = {
-        status: ""
+        agent_group: "",
+        url: "",
+        info_date: "",
       };
       this.handleQuery();
     }

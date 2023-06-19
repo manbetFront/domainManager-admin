@@ -1,13 +1,21 @@
 <template>
-  <div class="walletStyle">
-    <!-- 搜索框 -->
-    <search-form
-      @submit="handleQuery"
-      @resetQuery="resetQuery"
-      @handleExport="handleExport"
-    />
-    <!-- 表格 -->
-    <div class="tableStyle">
+ <div class="app-container">
+    <div class="list-common-query">
+       <search-form @submit="handleQuery" @resetQuery="resetQuery" />
+    </div>
+
+    <el-tabs v-model="tabActive" type="border-card" >
+      <template v-for="(tab, index) in sites">
+        <el-tab-pane
+          :key="index"
+          :name="tab"
+          :label="tab"
+        >
+        </el-tab-pane>
+      </template>
+    </el-tabs>
+
+    <div class="list-common-table">
       <el-table
         v-loading="loading"
         :data="tableData"
@@ -15,58 +23,41 @@
         border
         :max-height="650"
       >
-        <!-- <el-table-column label="序号" width="80" type="index" align="center" /> -->
-        <el-table-column
-          prop="order_id"
-          label="代理线"
-          width="180"
-          align="center"
-        />
-
-        <el-table-column
-          prop="username"
-          label="跳转域名"
-          width="220"
-          align="center"
-        />
-        <el-table-column
-          prop="username"
-          label="域名备注"
-          width="220"
-          align="center"
-        />
-
+        <!-- <el-table-column type="index" label="序号" width="80" align="center" /> -->
+        <el-table-column prop="agent_group" label="代理线" align="center" />
+        <el-table-column prop="host" label="跳转域名" align="center" min-width="120" />
+        <el-table-column prop="remark" label="域名备注" align="center" min-width="150" />
         <el-table-column
           prop="created_at"
           label="创建时间"
           width="180"
           align="center"
         />
+        <el-table-column label="到期时间" width="150" align="center">
+          <template slot-scope="{ row }">
+            <span v-if="row.near_expire === 1" style="color:#FF0000">{{ row.host_expire_at }}</span>
+            <span v-else>{{ row.host_expire_at }}</span>
+          </template>
+        </el-table-column>
         <el-table-column
-          prop="withdraw_from"
-          label="到期时间"
-          width="180"
-          align="center"
-        />
-        <el-table-column
-          prop="withdraw_address"
+          fixed="right"
+          prop="status"
           label="状态"
-          width="120"
+          min-width="80"
           align="center"
         >
-          <el-switch
-            v-model="value"
-            active-color="#13ce66"
-            inactive-color="#ff4949"
-          >
-          </el-switch>
+            <template slot-scope="{ row }">
+                <el-switch v-model="row.status" active-color="#13ce66"
+                :active-value="1" :inactive-value="2" @change="onSwitch(row)" />
+            </template>
         </el-table-column>
-        <el-table-column fixed="right" label="操作" width="180" align="center">
+
+        <el-table-column fixed="right" label="操作" min-width="100" align="center">
           <template slot-scope="scope">
-            <el-button type="text" size="small" @click="handleCheck(scope.row)"
+            <el-button type="text" size="small" @click="handleEdit(scope.row)"
               >编辑</el-button
             >
-            <el-button type="text" size="small" @click="handleEdit(scope.row)"
+            <el-button type="text" size="small" @click="handleDel(scope.row)"
               >删除</el-button
             >
           </template>
@@ -76,31 +67,41 @@
 
     <!-- 分页 -->
     <div class="list-common-bars">
+      <div class="action-btn fl">
+        <el-button type="primary" @click="openDialog()">
+          新增域名
+        </el-button>
+      </div>
+
       <pagination
+        class="fr"
         :total="total"
         :page.sync="listQuery.page"
-        :limit.sync="listQuery.page_size"
+        :limit.sync="listQuery.size"
         @pagination="getList"
       />
     </div>
-  </div>
+    <!-- 编辑 -->
+    <edit-dialog :visible.sync="editDialog" ref="editDialog"/>
+</div>
 </template>
 
 <script>
-// orderList
-// import mqtt from 'mqtt'
 import {
-  orderListAlreadyCompleteDownLoad,
-  getOrderRecord
-} from "@/api/theme/order/rate";
+  list,
+  update,
+  del
+} from "@/api/theme/domain/jump";
+import { getSiteData } from '@/utils/auth'
 import Pagination from "@/components/Pagination";
 import SearchForm from "./components/SearchForm";
-import { getRole, getSiteData } from "@/utils/auth";
+import EditDialog from "./components/editDialog";
 export default {
-  // name: 'VirtualOrderHistory',
+  // name: 'VirtualOrder',
   components: {
     SearchForm,
-    Pagination
+    Pagination,
+    EditDialog,
   },
   props: {},
   data() {
@@ -108,93 +109,57 @@ export default {
       total: 0,
       listQuery: {
         page: 1,
-        page_size: 10
+        size: 10
       },
-      exportData: {},
       loading: false,
-      tableData: []
+      tableData: [],
+      editDialog: false,
+      tabActive: "",
     };
   },
 
-  computed: {},
+  computed: {
+    sites(){
+      return Array(getSiteData());
+    }
+  },
 
   watch: {},
 
   created() {},
 
   mounted() {
-    // 表格列表
-    this.getList();
-    // 链接mqtt
-    // this.createConnection()
+    this.tabActive = this.sites[0];
+    this.resetQuery();
   },
 
   methods: {
-    getStatus(num) {
-      if (num === 1) {
-        return "未到账";
-      }
-      if (num === 2) {
-        return "已到账";
-      }
-      if (num === 3) {
-        return "未匹配";
-      }
-      if (num === 4) {
-        return "成功";
-      }
-      if (num === 5) {
-        return "成功,改过金额";
-      }
-      if (num === 6) {
-        return "超时";
-      }
-      if (num === 7) {
-        return "失败";
-      }
-      if (num === 8) {
-        return "审核通过";
-      }
-    },
-    //导出
-    handleExport() {
-      const param = {
-        ...this.exportData,
-        // group: getRole(),
-        platform: getSiteData(),
-        export: 1
-      };
-      window.open(orderListAlreadyCompleteDownLoad(param));
-    },
-    // 跳转链接
-    toUrl(url) {
-      window.open(url);
-    },
     // 重置操作
     resetQuery() {
       this.listQuery = {
         page: 1,
-        page_size: 10
+        size: 10,
+        platform: this.tabActive,
       };
-      this.exportData = {};
       this.getList();
     },
     // 搜索
     handleQuery(param) {
       this.listQuery = {
         page: 1,
-        page_size: 10
+        size: 10,
+        platform: this.tabActive,
       };
-      this.exportData = param;
       this.listQuery = Object.assign(this.listQuery, param);
       this.getList();
     },
     // 查询列表
     getList() {
       this.loading = true;
-      getOrderRecord({ ...this.listQuery })
+      this.$store.dispatch("order/getNumber2");
+      list({ ...this.listQuery })
         .then(response => {
-          if (response.status === 200) {
+          if (response.code === 200) {
             const data = response.data || [];
             this.tableData = data.data;
             this.total = data.total;
@@ -204,61 +169,55 @@ export default {
         .catch(() => {
           this.loading = false;
         });
-    }
+    },
+    // 编辑
+    handleEdit(rowData) {
+      this.editDialog = true;
+      this.$refs.editDialog.open(rowData, this.tabActive);
+    },
+
+    openDialog(){
+      this.editDialog = true;
+      this.$refs.editDialog.open(null, this.tabActive);
+    },
+
+    onSwitch(row) {
+      update({
+       ...row,
+       status: Number(row.status),
+       platform: this.tabActive,
+      }).then(res => {
+        if (res.code === 200) {
+          this.$message.success('编辑成功');
+          this.getList();
+        } else {
+          this.$message.error(res.msg);
+          this.$set(row, 'status', Number(row.status) === 1 ? 2 :1);
+        }
+      })
+    },
+
+    handleDel(rowData){
+      this.$confirm("确认删除该条数据么?", "", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          del({ id: rowData.id, platform: this.tabActive }).then(res => {
+            if (res.code !== 200) {
+              this.$message.error(res.msg);
+              return;
+            }
+            this.$message.success("刪除成功");
+            this.$store.dispatch("order/getNumber2");
+            this.getList();
+          });
+        })
+        .catch(() => {});
+    },
   }
 };
 </script>
 <style lang="scss" scoped>
-.walletStyle {
-  // height: 100%;
-  min-height: calc(100vh - 84px);
-  // padding-top: 20px;
-  padding: 25px;
-  // position: relative;
-
-  .tableStyle {
-    // padding: 0 20px;
-    // height: calc(100vh - 320px);
-    // overflow-y: auto;
-    margin-bottom: 50px;
-
-    .rowStyle {
-      text-align: right;
-      margin-bottom: 20px;
-    }
-  }
-
-  .page-fixed-static {
-    color: #646566;
-    background-color: #f8fff5;
-    position: absolute;
-    bottom: 52px;
-    left: 0;
-    right: 0;
-    font-size: 14px;
-    z-index: 100;
-    transition: left 0.28s;
-    padding: 15px;
-
-    .rows {
-      margin-bottom: 5px;
-    }
-  }
-
-  .list-common-bars {
-    background-color: #f4f4f4;
-    position: absolute;
-    z-index: 100;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: 52px;
-    line-height: 52px;
-    transition: left 0.28s;
-  }
-
-  /deep/.el-pagination {
-    padding-top: 13px;
-  }
-}
 </style>

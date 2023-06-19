@@ -20,8 +20,8 @@ router.beforeEach(async(to, from, next) => {
     } else {
       if (store.getters.roles.length === 0) {
         // await store.dispatch('order/fetchOrderNotice')
-        // await store.dispatch('order/getNumber1')
-        // await store.dispatch('order/getNumber2')
+        await store.dispatch('order/getNumber1')
+        await store.dispatch('order/getNumber2')
         // await store.dispatch('order/getNumber3')
         // await store.dispatch('order/getNumber4')
 
@@ -40,16 +40,16 @@ router.beforeEach(async(to, from, next) => {
             router.addRoutes(accessRoutes) // 动态添加可访问路由表
             next({ ...to, replace: true }) // hack方法 确保addRoutes已完成
           })
-          store.dispatch('order/fetchOrderNotice')
+          // store.dispatch('order/fetchOrderNotice')
           store.dispatch('order/getNumber1')
           store.dispatch('order/getNumber2')
-          store.dispatch('order/getNumber3')
-          store.dispatch('order/getNumber4')
-          store.dispatch('order/getWithdraw')
+          // store.dispatch('order/getNumber3')
+          // store.dispatch('order/getNumber4')
+          // store.dispatch('order/getWithdraw')
         })
           .catch(err => {
             store.dispatch('FedLogOut').then(() => {
-              Message.error(err)
+              Message.error(err.message)
               next({ path: '/' })
             })
           })

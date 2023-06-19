@@ -76,4 +76,54 @@
 // fix date-picker ui bug in filter-item
 .el-range-editor.el-input__inner {
   display: inline-flex !important;
+  .el-range-separator {
+    padding: 0;
+  }
+}
+
+.el-table {
+  & th,
+  & td {
+    text-align: center;
+  }
+  th.el-table__cell {
+    background-color: #f8f8f9;
+    color: #515a6e;
+    user-select: auto;
+  }
+  .el-table__cell {
+    text-align: center;
+  }
+  .el-table__fixed-right{
+    height: 100% !important;
+  }
+  .el-table th.gutter{
+    display: table-cell!important;
+  }
+  body .el-table th.gutter {
+    display: table-cell !important
+  }
+}
+
+.el-button  {
+  + .el-button.el-button--text {
+    margin-left: 15px;
+  }
+}
+
+.el-input-group .el-input-group__prepend {
+  .el-select .el-input.is-focus .el-input__inner {
+    border-color: transparent;
+  }
+  + .el-range-editor {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+}
+
+.el-time-group{
+  display: inline-flex;
+  .el-item-cb{
+    margin-left: 10px;
+  }
 }

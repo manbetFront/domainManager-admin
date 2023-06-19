@@ -1,39 +1,27 @@
 <template>
   <div class="searchForm">
-    <el-form ref="queryForm" :model="form" :inline="true">
-      <el-form-item label="域名搜索">
-        <el-input
-          v-model="form.name"
-          placeholder="请输入域名或代理线"
-        ></el-input>
+    <el-form ref="queryForm" :model="form" :inline="true" label-width="70px">
+      <el-form-item label="代理线">
+        <el-input v-model="form.agent_group" placeholder="请输入代理线"></el-input>
       </el-form-item>
-      <el-form-item label="创建时间">
-        <el-date-picker
-          v-model="value1"
-          type="datetimerange"
-          range-separator="至"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-        >
-        </el-date-picker>
-      </el-form-item>
-      <el-form-item label="状态">
-        <el-select
-          v-model="form.status"
-          placeholder="全部"
-          clearable
-          size="mini"
-        >
-          <el-option
-            v-for="dict in statusOptions"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
-          />
-        </el-select>
+      <el-form-item label="域名">
+        <el-input v-model="form.url" placeholder="请输入域名" style="width: 250px;"></el-input>
       </el-form-item>
 
-      <el-form-item style="margin-left:20px">
+      <el-form-item label="操作时间">
+          <el-date-picker
+            v-model="datetimeRange"
+            type="datetimerange"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            format="yyyy-MM-dd HH:mm:ss"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            clearable
+          />
+      </el-form-item>
+
+      <el-form-item>
         <el-button
           type="primary"
           icon="el-icon-search"
@@ -44,9 +32,6 @@
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery"
           >重置</el-button
         >
-        <!-- <el-button type="primary" size="mini" @click="handleExport"
-          >导出</el-button
-        > -->
       </el-form-item>
     </el-form>
   </div>
@@ -55,28 +40,21 @@
 <script>
 export default {
   name: "SearchForm",
-  components: {},
   props: {},
   data() {
     return {
+      dateType: 1, 
+      datetimeRange: [],
+
       form: {
-        name: "",
-        status: ""
+        agent_group: "",
+        url: "",
       },
-      statusOptions: [
-        {
-          value: "1",
-          label: "成功,启用"
-        },
-        {
-          value: "0",
-          label: "关闭"
-        }
-      ]
     };
   },
 
-  computed: {},
+  computed: {
+  },
 
   watch: {},
 
@@ -85,28 +63,26 @@ export default {
   mounted() {},
 
   methods: {
-    // 选择框发生改变
-    getTextValue() {
-      this.form.valueText = "";
-    },
+
     handleQuery() {
-      const postData = {};
-      postData[this.form.typeWay] = this.form.valueText;
-      // postData.status = this.form.status
-      // postData.coin_type = this.form.coin_type
+      const postData = {...this.form};
+      
+      if (this.datetimeRange) {
+          postData.start_at = this.datetimeRange[0];
+          postData.end_at = this.datetimeRange[1];
+      }
+
       this.$emit("submit", postData);
     },
     // 重置
     resetQuery() {
-      const obj = {
-        valueText: ""
+      this.kwType = 1;
+      this.form = { 
+        agent_group: "",
+        url: "",
       };
-      this.form = { ...obj };
+      this.datetimeRange = [];
       this.$emit("resetQuery");
-    },
-    //导出
-    handleExport() {
-      this.$emit("handleExport");
     }
   }
 };

@@ -10,7 +10,7 @@
     <breadcrumb id="breadcrumb-container" class="breadcrumb-container" />
 
     <div class="right-menu">
-      <template v-if="device !== 'mobile'">
+      <!-- <template v-if="device !== 'mobile'">
         <search id="header-search" class="right-menu-item" />
 
         <el-tooltip content="下载源码" effect="dark" placement="bottom">
@@ -22,7 +22,7 @@
         <el-tooltip content="布局大小" effect="dark" placement="bottom">
           <size-select id="size-select" class="right-menu-item hover-effect" />
         </el-tooltip>
-      </template>
+      </template> -->
 
       <el-dropdown
         class="avatar-container right-menu-item hover-effect"

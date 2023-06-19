@@ -54,7 +54,10 @@
     }
 
     .svg-icon {
-      margin-right: 16px;
+      margin-right: 5px;
+      em {
+        font-style: normal;
+      }
     }
 
     .right-badge {
@@ -65,7 +68,7 @@
       color: #fff;
       border-radius: 888px;
       position: absolute;
-      right: 5px;
+      right: 12px;
       top: 18px;
       line-height: 1.2;
     }
@@ -90,7 +93,6 @@
 
     & .nest-menu .el-submenu>.el-submenu__title,
     & .el-submenu .el-menu-item {
-      position: relative;
       min-width: $sideBarWidth !important;
       background-color: $subMenuBg !important;
 
@@ -102,11 +104,11 @@
 
   .hideSidebar {
     .sidebar-container {
-      width: 54px !important;
+      width: $sideBarMinWidth !important;
     }
 
     .main-container {
-      margin-left: 54px;
+      margin-left: $sideBarMinWidth;
     }
 
     .submenu-title-noDropdown {
