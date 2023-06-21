@@ -93,7 +93,7 @@ export default {
         username: "",
         password: "",
         rememberMe: false,
-        code: "",
+        // code: "",
         uuid: ""
       },
       loginRules: {
