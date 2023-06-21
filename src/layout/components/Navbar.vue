@@ -11,12 +11,28 @@
 
     <div class="right-menu">
       <template v-if="device !== 'mobile'">
-        <div v-if="getNumber() > 0" class="info-box">
-          <el-badge :value="getNumber()" class="item">
+        <el-popover v-if="getNumber() > 0" placement="bottom" width="230" trigger="hover">
+          <div class="pop-div">
+            <div v-if="getNum1() > 0">
+              <span @click="goPromotionDomain()" class="pop-span">有{{ getNum1() }}个推广域名即将到期</span>
+            </div>
+            <el-divider v-if="getNum1() > 0 && getNum2() > 0"></el-divider>
+            <div v-if="getNum2() > 0">
+              <span @click="goJumpDomain()"  class="pop-span">有{{ getNum2() }}个跳转域名即将到期</span>
+            </div>
+          </div>
+          <div slot="reference" class="info-box">
+            <el-badge :value="getNumber()" class="item">
+              <span class="info">
+                <i class="el-icon-message-solid"></i>
+              </span>
+            </el-badge>
+          </div>
+        </el-popover>
+        <div v-else slot="reference" class="info-box">
             <span class="info">
               <i class="el-icon-message-solid"></i>
             </span>
-          </el-badge>
         </div>
         <!-- <search id="header-search" class="right-menu-item" />
 
@@ -116,9 +132,25 @@ export default {
         });
       });
     },
+    
+    goPromotionDomain(){
+      this.$router.push("/domainAdmin/promotion" );
+    },
+
+    goJumpDomain(){
+      this.$router.push("/domainAdmin/jumpmain" );
+    },
 
     getNumber() {
       return (this.order.numData1 + this.order.numData2 )|| "0";
+    },
+
+    getNum1() {
+      return this.order.numData1 || 0;
+    },
+
+    getNum2() {
+      return this.order.numData2 || 0;
     }
   },
 };
@@ -198,6 +230,7 @@ export default {
       line-height: 1;
     }
 
+
     .avatar-container {
       margin-right: 30px;
 
@@ -232,5 +265,15 @@ export default {
   white-space: nowrap;
   overflow: hidden;
   vertical-align: bottom;
+}
+
+.pop-div{
+    .pop-span{
+    cursor: pointer;
+    line-height: 15px;
+  }
+}
+.el-divider--horizontal{
+  margin: 14px 0;
 }
 </style>
