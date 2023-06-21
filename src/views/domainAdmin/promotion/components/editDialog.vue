@@ -31,7 +31,7 @@
             class="w-100"
           />
         </el-form-item>
-        <el-form-item label="状态">
+        <el-form-item label="状态" prop="status">
           <el-radio-group v-model="form.status">
             <el-radio :label="1">启用</el-radio>
             <el-radio :label="2">禁用</el-radio>
@@ -65,7 +65,11 @@ export default {
       form: {
         status: 1
       },
-      dialogRule: {},
+      dialogRule: {
+        main_host: [{ required: true, message: "请输入跳转域名", trigger: 'blur' }],
+        remark: [{ required: true, message: "请输入域名备注", trigger: 'blur' }],
+        status: [{ required: true, message: "请选择状态", trigger: ['blur', 'change'] }],
+      },
     }
   },
 
@@ -115,24 +119,30 @@ export default {
     },
 
     create(){
-      create(this.form).then(res => {
-        if (res.code !== 200) {
-          return this.$message.error(res.msg)
-        }
-        this.$parent.getList()
-        this.$message.success('创建成功')
-        this.formVisible = false
+      this.$refs['form'].validate(valid => {
+        if (!valid) return;
+        create(this.form).then(res => {
+          if (res.code !== 200) {
+            return this.$message.error(res.msg)
+          }
+          this.$parent.getList()
+          this.$message.success('创建成功')
+          this.formVisible = false
+        })
       })
     },
 
     edit(){
-      update(this.form).then(res => {
-        if (res.code !== 200) {
-          return this.$message.error(res.msg)
-        }
-        this.$parent.getList()
-        this.$message.success('编辑成功')
-        this.formVisible = false
+      this.$refs['form'].validate(valid => {
+        if (!valid) return;
+        update(this.form).then(res => {
+          if (res.code !== 200) {
+            return this.$message.error(res.msg)
+          }
+          this.$parent.getList()
+          this.$message.success('编辑成功')
+          this.formVisible = false
+        })
       })
     }
    

@@ -15,6 +15,9 @@
       <el-form-item label="跳转域名" prop="host">
         <el-input v-model="form.host" />
       </el-form-item>
+      <el-form-item label="服务器IP" prop="ip">
+        <el-input v-model="form.ip" />
+      </el-form-item>
       <el-form-item label="域名备注" prop="remark">
         <el-input v-model="form.remark" />
       </el-form-item>
@@ -27,7 +30,7 @@
           class="w-100"
         />
       </el-form-item>
-      <el-form-item label="状态">
+      <el-form-item label="状态" prop="status">
         <el-radio-group v-model="form.status">
           <el-radio :label="1">启用</el-radio>
           <el-radio :label="2">禁用</el-radio>
@@ -60,7 +63,11 @@ export default {
       form: {
         status: 1
       },
-      dialogRule: {},
+      dialogRule: {
+        host: [{ required: true, message: "请输入跳转域名", trigger: 'blur' }],
+        ip: [{ required: true, message: "请输入服务器IP", trigger: 'blur' }],
+        status: [{ required: true, message: "请选择状态", trigger: ['blur', 'change'] }],
+      },
     }
   },
 
@@ -110,24 +117,30 @@ export default {
     },
 
     create(){
-      create(this.form).then(res => {
-        if (res.code !== 200) {
-          return this.$message.error(res.msg)
-        }
-        this.$parent.getList()
-        this.$message.success("创建成功");
-        this.formVisible = false
+      this.$refs['form'].validate(valid => {
+        if (!valid) return;
+        create(this.form).then(res => {
+          if (res.code !== 200) {
+            return this.$message.error(res.msg)
+          }
+          this.$parent.getList()
+          this.$message.success("创建成功");
+          this.formVisible = false
+        })
       })
     },
 
     edit(){
-      update(this.form).then(res => {
-        if (res.code !== 200) {
-          return this.$message.error(res.msg)
-        }
-        this.$parent.getList()
-        this.$message.success("编辑成功");
-        this.formVisible = false
+      this.$refs['form'].validate(valid => {
+        if (!valid) return;
+        update(this.form).then(res => {
+          if (res.code !== 200) {
+            return this.$message.error(res.msg)
+          }
+          this.$parent.getList()
+          this.$message.success("编辑成功");
+          this.formVisible = false
+        })
       })
     }
    

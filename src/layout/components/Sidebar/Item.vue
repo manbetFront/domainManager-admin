@@ -24,7 +24,7 @@ export default {
       vnodes.push(<svg-icon icon-class={icon}/>)
     }
 
-    if (badge) {
+    if (badge && badge > 0) {
       vnodes.push(<em class='right-badge'>{badge}</em>)
     }
 

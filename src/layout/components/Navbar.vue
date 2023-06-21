@@ -10,8 +10,15 @@
     <breadcrumb id="breadcrumb-container" class="breadcrumb-container" />
 
     <div class="right-menu">
-      <!-- <template v-if="device !== 'mobile'">
-        <search id="header-search" class="right-menu-item" />
+      <template v-if="device !== 'mobile'">
+        <div v-if="getNumber() > 0" class="info-box">
+          <el-badge :value="getNumber()" class="item">
+            <span class="info">
+              <i class="el-icon-message-solid"></i>
+            </span>
+          </el-badge>
+        </div>
+        <!-- <search id="header-search" class="right-menu-item" />
 
         <el-tooltip content="下载源码" effect="dark" placement="bottom">
           <ruo-yi id="ruoyi" class="right-menu-item hover-effect" />
@@ -21,8 +28,8 @@
 
         <el-tooltip content="布局大小" effect="dark" placement="bottom">
           <size-select id="size-select" class="right-menu-item hover-effect" />
-        </el-tooltip>
-      </template> -->
+        </el-tooltip> -->
+      </template>
 
       <el-dropdown
         class="avatar-container right-menu-item hover-effect"
@@ -60,6 +67,7 @@ import Screenfull from "@/components/Screenfull";
 import SizeSelect from "@/components/SizeSelect";
 import Search from "@/components/HeaderSearch";
 import RuoYi from "@/components/RuoYi";
+import { mapState } from "vuex";
 
 export default {
   components: {
@@ -72,6 +80,9 @@ export default {
   },
   computed: {
     ...mapGetters(["sidebar", "avatar", "device"]),
+
+    ...mapState(["order"]),
+
     setting: {
       get() {
         return this.$store.state.settings.showSettings;
@@ -105,6 +116,10 @@ export default {
         });
       });
     },
+
+    getNumber() {
+      return (this.order.numData1 + this.order.numData2 )|| "0";
+    }
   },
 };
 </script>
@@ -140,9 +155,9 @@ export default {
   }
 
   .right-menu {
-    float: right;
-    height: 100%;
-    line-height: 50px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
 
     &:focus {
       outline: none;
@@ -164,6 +179,23 @@ export default {
           background: rgba(0, 0, 0, 0.025);
         }
       }
+    }
+
+    .info-box {
+      display: inline-block;
+      line-height: 50px;
+      margin: 0 10px;
+      font-size: 20px;
+      .info {
+        cursor: pointer;
+        .el-icon-message-solid{
+          font-size: 30px;
+        }
+      }
+    }
+
+    .el-badge {
+      line-height: 1;
     }
 
     .avatar-container {
