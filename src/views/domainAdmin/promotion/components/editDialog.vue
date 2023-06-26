@@ -67,7 +67,7 @@ export default {
       },
       dialogRule: {
         main_host: [{ required: true, message: "请输入跳转域名", trigger: 'blur' }],
-        remark: [{ required: true, message: "请输入域名备注", trigger: 'blur' }],
+        agent_host: [{ required: true, message: "请输入推广域名", trigger: 'blur' }],
         status: [{ required: true, message: "请选择状态", trigger: ['blur', 'change'] }],
       },
     }
