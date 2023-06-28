@@ -1,11 +1,17 @@
 <template>
   <div class="searchForm">
     <el-form ref="queryForm" :model="form" :inline="true" label-width="70px">
-      <el-form-item label="代理线">
-        <el-input v-model="form.agent_group" placeholder="请输入代理线"></el-input>
-      </el-form-item>
-      <el-form-item label="域名">
-        <el-input v-model="form.url" placeholder="请输入域名" style="width: 250px;"></el-input>
+      <el-form-item>
+        <el-input v-model="kwText" placeholder="请输入" clearable>
+          <el-select v-model="kwType" slot="prepend" style="width: 105px">
+            <el-option
+              v-for="(opt, index) in kwOptions"
+              :key="index"
+              :label="opt.label"
+              :value="opt.value"
+            />
+          </el-select>
+        </el-input>
       </el-form-item>
 
       <el-form-item>
@@ -71,18 +77,27 @@ export default {
   props: {},
   data() {
     return {
+      kwType: "url",
+      kwText: "",
+
       dateType: 1, 
       datetimeRange: [],
 
       form: {
-        agent_group: "",
-        url: "",
         status: ""
       },
     };
   },
 
   computed: {
+    kwOptions() {
+      return [
+        { label: '推广域名', value: "url" },
+        { label: '代理线', value: "agent_group" },
+        { label: '代理code', value: "agent_code" },
+      ];
+    },
+
     dateTypeOptions() {
       return [
         { value: 1, label: '创建时间' },
@@ -98,7 +113,11 @@ export default {
     },
   },
 
-  watch: {},
+  watch: {
+    kwType() {
+      this.kwText = "";
+    },
+   },
 
   created() {},
 
@@ -107,7 +126,7 @@ export default {
   methods: {
     handleQuery() {
       const postData = {...this.form};
-      
+      postData[this.kwType] = this.kwText;
       if (this.datetimeRange) {
         if (this.dateType == 1) {
           postData.start_at = this.datetimeRange[0];
@@ -122,10 +141,9 @@ export default {
     },
     // 重置
     resetQuery() {
-      this.kwType = 1;
+      this.kwType = "url";
+      this.kwText = "";
       this.form = { 
-        agent_group: "",
-        url: "",
         status: ""
       };
       this.datetimeRange = [];

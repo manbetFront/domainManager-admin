@@ -24,7 +24,7 @@ const _routerData = [
         path: "jumpmain",
         component: "domainAdmin/jumpmain",
         name: "DomainJumpmain",
-        meta: { title: "跳转域名设置", icon: "example", hasBadge: 2}
+        meta: { title: "主域名设置", icon: "example", hasBadge: 2}
       },
       {
         path: "handle",

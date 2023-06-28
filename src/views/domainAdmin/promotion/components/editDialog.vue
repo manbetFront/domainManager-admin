@@ -10,16 +10,19 @@
       append-to-body
     >
       <el-form ref="form" label-width="100px" label-suffix=":" :model="form" :rules="dialogRule">
-        <el-form-item label="代理线" prop="agent_group">
+        <el-form-item label="代理线">
           <el-input v-model="form.agent_group" />
+        </el-form-item>
+        <el-form-item label="代理code">
+          <el-input v-model="form.agent_code" />
         </el-form-item>
         <el-form-item label="推广域名" prop="agent_host">
           <el-input v-model="form.agent_host" />
         </el-form-item>
-        <el-form-item label="跳转域名" prop="main_host">
+        <el-form-item label="主域名" prop="main_host">
           <el-input v-model="form.main_host" />
         </el-form-item>
-        <el-form-item label="域名备注" prop="remark">
+        <el-form-item label="域名备注">
           <el-input v-model="form.remark" />
         </el-form-item>
         <el-form-item label="到期时间" prop="host_expire_at">
@@ -66,7 +69,7 @@ export default {
         status: 1
       },
       dialogRule: {
-        main_host: [{ required: true, message: "请输入跳转域名", trigger: 'blur' }],
+        main_host: [{ required: true, message: "请输入主域名", trigger: 'blur' }],
         agent_host: [{ required: true, message: "请输入推广域名", trigger: 'blur' }],
         status: [{ required: true, message: "请选择状态", trigger: ['blur', 'change'] }],
       },

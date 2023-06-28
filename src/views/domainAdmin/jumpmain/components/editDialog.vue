@@ -9,10 +9,10 @@
     append-to-body
   >
     <el-form ref="form" label-width="100px" label-suffix=":" :model="form" :rules="dialogRule">
-      <el-form-item label="代理线" prop="agent_group">
+      <!-- <el-form-item label="代理线" prop="agent_group">
         <el-input v-model="form.agent_group" />
-      </el-form-item>
-      <el-form-item label="跳转域名" prop="host">
+      </el-form-item> -->
+      <el-form-item label="主域名" prop="host">
         <el-input v-model="form.host" />
       </el-form-item>
       <el-form-item label="服务器IP">
