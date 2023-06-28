@@ -15,9 +15,9 @@
       <el-form-item label="主域名" prop="host">
         <el-input v-model="form.host" />
       </el-form-item>
-      <el-form-item label="服务器IP">
+      <!-- <el-form-item label="服务器IP">
         <el-input v-model="form.ip" />
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="域名备注" prop="remark">
         <el-input v-model="form.remark" />
       </el-form-item>
@@ -65,7 +65,7 @@ export default {
       },
       dialogRule: {
         host: [{ required: true, message: "请输入跳转域名", trigger: 'blur' }],
-        // ip: [{ required: true, message: "请输入服务器IP", trigger: 'blur' }],
+        // ip: [{ required: true, message: "请输入", trigger: 'blur' }],
         status: [{ required: true, message: "请选择状态", trigger: ['blur', 'change'] }],
       },
     }

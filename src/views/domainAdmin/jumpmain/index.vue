@@ -27,7 +27,7 @@
         <!-- <el-table-column prop="agent_group" label="代理线" align="center" /> -->
         <el-table-column prop="host" label="主域名" align="center" min-width="120" />
         <el-table-column prop="remark" label="域名备注" align="center" min-width="150" />
-        <el-table-column prop="ip" label="服务器IP" align="center" min-width="120" />
+        <!-- <el-table-column prop="ip" label="服务器IP" align="center" min-width="120" /> -->
         <el-table-column
           prop="created_at"
           label="创建时间"
