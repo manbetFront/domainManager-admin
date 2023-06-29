@@ -231,6 +231,7 @@ export default {
       page: 1,
       size: 999,
       status: 1,
+      pid: process.env.VUE_APP_PID,
     }).then((res) => {
       if (res.code === 0) {
         this.roleOptions = res.data.data;
