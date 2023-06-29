@@ -110,7 +110,7 @@ export default {
           if (response.code === 200) {
             const data = response.data || [];
             this.total_uv = data.total_uv;
-            this.total_register_num = data.total_register_num;
+            this.total_register = data.total_register_num;
             this.configList = data.list.data;
             this.total = data.list.total;
             this.loading = false;
