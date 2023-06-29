@@ -39,7 +39,7 @@
     </el-form>
     <div slot="footer">
       <el-button @click="formVisible = false">取消</el-button>
-      <el-button type="primary" @click="handleConfirm">
+      <el-button type="primary" :loading="confirming" @click="handleConfirm">
         确定
       </el-button>
     </div>
@@ -63,6 +63,7 @@ export default {
       form: {
         status: 1
       },
+      confirming: false,
       dialogRule: {
         host: [{ required: true, message: "请输入跳转域名", trigger: 'blur' }],
         // ip: [{ required: true, message: "请输入", trigger: 'blur' }],
@@ -117,29 +118,35 @@ export default {
     },
 
     create(){
+      if(this.confirming)return;
+      this.confirming = true;
       this.$refs['form'].validate(valid => {
         if (!valid) return;
         create(this.form).then(res => {
+          this.formVisible = false;
           if (res.code !== 200) {
             return this.$message.error(res.msg)
           }
           this.$parent.getList()
           this.$message.success("创建成功");
-          this.formVisible = false
+          this.confirming = false;
         })
       })
     },
 
     edit(){
+      if(this.confirming)return;
+      this.confirming = true;
       this.$refs['form'].validate(valid => {
         if (!valid) return;
         update(this.form).then(res => {
+          this.formVisible = false;
           if (res.code !== 200) {
             return this.$message.error(res.msg)
           }
           this.$parent.getList()
           this.$message.success("编辑成功");
-          this.formVisible = false
+          this.confirming = false;
         })
       })
     }
