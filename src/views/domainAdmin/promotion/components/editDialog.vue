@@ -138,7 +138,16 @@ export default {
     edit(){
       this.$refs['form'].validate(valid => {
         if (!valid) return;
-        update(this.form).then(res => {
+        var params = {
+          ...this.form,
+          agent_group: this.form.agent_group || "",
+          agent_code: this.form.agent_code || "",
+          agent_host: this.form.agent_host || "",
+          main_host: this.form.main_host || "",
+          remark: this.form.remark || "",
+          host_expire_at: this.form.host_expire_at || "",
+        }
+        update(params).then(res => {
           if (res.code !== 200) {
             return this.$message.error(res.msg)
           }
