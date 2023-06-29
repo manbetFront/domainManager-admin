@@ -121,7 +121,10 @@ export default {
       if(this.confirming)return;
       this.confirming = true;
       this.$refs['form'].validate(valid => {
-        if (!valid) return;
+        if (!valid) {
+          this.confirming = false;
+          return;
+        }
         create(this.form).then(res => {
           this.formVisible = false;
           if (res.code !== 200) {
@@ -138,7 +141,10 @@ export default {
       if(this.confirming)return;
       this.confirming = true;
       this.$refs['form'].validate(valid => {
-        if (!valid) return;
+        if (!valid) {
+          this.confirming = false;
+          return;
+        }
         update(this.form).then(res => {
           this.formVisible = false;
           if (res.code !== 200) {
