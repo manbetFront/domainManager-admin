@@ -448,6 +448,7 @@ export default {
       SystemUserUpdate({
         id: row.id,
         status: Number(!row.status),
+        pid: process.env.VUE_APP_PID,
       })
         .then((res) => {
           if (res.code == 0) {

@@ -391,7 +391,8 @@ export default {
     handleUpdateStatus(row) {
       PowerUpdate({
         id: row.id,
-        status: Number(!row.status)
+        status: Number(!row.status),
+        pid: process.env.VUE_APP_PID,
       })
         .then((res) => {
           if (res.code === 200) {

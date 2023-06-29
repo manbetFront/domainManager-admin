@@ -135,7 +135,7 @@ export function SystemUserUpdate(data) {
   return request({
     url: `/api/v2/user/update/${data.id}`,
     method: 'post',
-    data: {status: data.status}
+    data
   }, 'login')
 }
 
