@@ -241,6 +241,7 @@ export default {
       token: getToken(),
       page: 1,
       size: 999,
+      pid: process.env.VUE_APP_PID,
     }).then((res) => {
       if (res.code === 0) {
         this.departmentsOptions = res.data;

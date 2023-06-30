@@ -254,7 +254,8 @@ export default {
         token: getToken(),
         page: 1,
         size: 999,
-        status: 1
+        status: 1,
+        pid: process.env.VUE_APP_PID,
       }).then((res) => {
         if (res.code === 0) {
           this.roleOptions = res.data.data
@@ -264,7 +265,7 @@ export default {
     /** 查询登录日志列表 */
     getList() {
       this.loading = true
-      PowerList({ ...this.queryParams })
+      PowerList({ ...this.queryParams, pid: process.env.VUE_APP_PID })
         .then((response) => {
           this.configList = response.data.data
           this.total = response.data.total
@@ -329,7 +330,8 @@ export default {
             this.form.group = String(this.form.rolesList)
             if (this.form.id) {
               PowerEdit({
-                ...this.form
+                ...this.form,
+                pid: process.env.VUE_APP_PID,
               })
                 .then((response) => {
                   if (response.code === 200) {
@@ -346,7 +348,7 @@ export default {
                   this.sureClick = true
                 })
             } else {
-              PowerAdd({ ...this.form })
+              PowerAdd({ ...this.form, pid: process.env.VUE_APP_PID, })
                 .then((response) => {
                   if (response.code === 200) {
                     this.msgSuccess(response.msg)
@@ -375,7 +377,8 @@ export default {
       })
         .then(() => {
           PowerDel({
-            id
+            id,
+            pid: process.env.VUE_APP_PID,
           }).then((res) => {
             if (res.code === 200) {
               this.msgSuccess('删除成功')
