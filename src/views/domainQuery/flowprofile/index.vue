@@ -92,19 +92,22 @@ export default {
 
   mounted() {
     this.tabActive = this.sites[0];
-    this.getList();
+    // this.getList();
   },
 
   methods: {
     // 搜索
     handleQuery(param) {
+      if(!this.tabActive){
+        this.tabActive = this.sites[0];
+      }
       this.listQuery = Object.assign(this.listQuery, param);
       this.getList();
     },
     /** 查询列表 */
     getList() {
       this.loading = true;
-      list({ ...this.listQuery })
+      list({ ...this.listQuery,  platform: this.tabActive })
         .then(response => {
           if (response.code === 200) {
             const data = response.data || [];

@@ -7,7 +7,7 @@ export function list(obj) {
   const params = {
     ...obj
   }
-  params.platform = getSiteData()
+  // params.platform = getSiteData()
   return request({
     url: '/api/agent_host/upv_list',
     method: 'post',

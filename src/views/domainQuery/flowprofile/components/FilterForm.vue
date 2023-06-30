@@ -31,6 +31,7 @@
 </template>
 
 <script>
+import { dateFormat } from "@/utils/index";
 export default {
   props: {},
   data() {
@@ -38,12 +39,12 @@ export default {
       form: {
         agent_group: "",
         url: "",
-        info_date: "",
+        info_date: dateFormat(new Date(), "yyyy-MM-dd"),
       },
     };
   },
   created() {
-    // this.handleQuery()
+    this.resetQuery()
   },
   methods: {
     handleQuery() {
@@ -53,7 +54,7 @@ export default {
       this.form = {
         agent_group: "",
         url: "",
-        info_date: "",
+        info_date: dateFormat(new Date(), "yyyy-MM-dd"),
       };
       this.handleQuery();
     }
