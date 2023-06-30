@@ -7,7 +7,7 @@ export function list(obj) {
   const params = {
     ...obj
   }
-  params.platform = getSiteData()
+  // params.platform = getSiteData()
   return request({
     url: '/api/main_host/list',
     method: 'post',
@@ -20,7 +20,7 @@ export function create(obj) {
   const params = {
     ...obj
   }
-  params.platform = getSiteData()
+  // params.platform = getSiteData()
   return request({
     url: '/api/main_host/create',
     method: 'post',
@@ -33,7 +33,7 @@ export function update(obj) {
   const params = {
     ...obj
   }
-  params.platform = getSiteData()
+  // params.platform = getSiteData()
   return request({
     url: '/api/main_host/update',
     method: 'post',
@@ -46,7 +46,7 @@ export function del(obj) {
   const params = {
     ...obj
   }
-  params.platform = getSiteData()
+  // params.platform = getSiteData()
   return request({
     url: '/api/main_host/delete',
     method: 'post',
@@ -59,7 +59,7 @@ export function jumpExpireList(obj) {
     const params = {
       ...obj
     }
-    params.platform = getSiteData()
+    // params.platform = getSiteData()
     return request({
       url: '/api/main_host/expire',
       method: 'post',
