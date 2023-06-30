@@ -57,15 +57,15 @@
       </el-form-item> -->
       <el-checkbox
         v-model="loginForm.rememberMe"
-        style="margin:0px 0px 25px 0px;"
+        style="margin: 0px 0px 25px 0px"
         >记住密码</el-checkbox
       >
-      <el-form-item style="width:100%;">
+      <el-form-item style="width: 100%">
         <el-button
           :loading="loading"
           size="medium"
           type="primary"
-          style="width:100%;"
+          style="width: 100%"
           @click.native.prevent="handleLogin"
         >
           <span v-if="!loading">登 录</span>
@@ -74,6 +74,34 @@
       </el-form-item>
     </el-form>
     <!--  底部  -->
+    <!-- 谷歌验证弹窗 -->
+    <el-dialog
+      title="验证码"
+      :visible.sync="codeVisible"
+      :before-close="handleClose"
+      width="300px"
+    >
+      <div class="qrcode-2fa">
+        <p v-if="qrcode" class="">密钥：{{ secret }}</p>
+
+        <div v-if="qrcode" v-html="qrcode" />
+        <el-input
+          v-model="code"
+          placeholder="请输入Google Authenticator验证码"
+        />
+
+        <el-button
+          :loading="loading"
+          size="medium"
+          type="primary"
+          style="width: 100%; margin-top: 20px"
+          @click.native.prevent="handleLogin"
+        >
+          <span v-if="!loading">登 录</span>
+          <span v-else>登 录 中...</span>
+        </el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -85,7 +113,7 @@ import { encrypt, decrypt } from "@/utils/jsencrypt";
 
 export default {
   name: "Login",
-  data() {
+  data () {
     return {
       codeUrl: "",
       cookiePassword: "",
@@ -105,30 +133,36 @@ export default {
         // code: [{ required: true, trigger: "change", message: "验证码不能为空" }]
       },
       loading: false,
-      redirect: undefined
+      redirect: undefined,
+
+      qrcode: null,
+      code: undefined,
+      secret: undefined,
+      codeNum: 1,
+      codeVisible: false,
     };
   },
   watch: {
     $route: {
-      handler: function(route) {
+      handler: function (route) {
         this.redirect = route.query && route.query.redirect;
       },
       immediate: true
     }
   },
-  created() {
+  created () {
     // 二次修改 accessRoutes
     // this.getCode();
     this.getCookie();
   },
   methods: {
-    getCode() {
+    getCode () {
       getCodeImg().then(res => {
         this.codeUrl = "data:image/gif;base64," + res.img;
         this.loginForm.uuid = res.uuid;
       });
     },
-    getCookie() {
+    getCookie () {
       const username = Cookies.get("username");
       const password = Cookies.get("password");
       const rememberMe = Cookies.get("rememberMe");
@@ -139,7 +173,7 @@ export default {
         rememberMe: rememberMe === undefined ? false : Boolean(rememberMe)
       };
     },
-    handleLogin() {
+    handleLogin () {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true;
@@ -156,11 +190,40 @@ export default {
             Cookies.remove("password");
             Cookies.remove("rememberMe");
           }
+          // 6.30 ====
+          const obj = { ...this.loginForm };
+          if (this.code) {
+            obj.code = this.code;
+            obj.secret = this.secret;
+            delete obj.captcha;
+          }
+          if (obj.code === "") {
+            delete obj.code;
+          }
           this.$store
-            .dispatch("Login", this.loginForm)
+            .dispatch("Login", obj)
             .then(res => {
-              // console.log(res)
+              // console.log(res, "=======参数==")
+              const { code, msg, data } =res 
               this.loading = false;
+              if (code === 407) {
+                this.qrcode = data.qr_code;
+                this.secret = data.secret;
+                this.codeVisible = true;
+                return;
+              }
+              if (code === 402) {
+                if (this.codeNum === 1) {
+                  this.code = "";
+                  this.codeVisible = true;
+                  this.codeNum = 2;
+                  return;
+                }
+                if (this.codeNum === 2) {
+                  this.$message.error(msg);
+                  return;
+                }
+              }
               this.getSiteData();
             })
             .catch(err => {
@@ -172,7 +235,7 @@ export default {
       });
     },
     // 是否有站点
-    getSiteData() {
+    getSiteData () {
       this.$store.dispatch("getUserSiteData").then(res => {
         if (res.status === 200) {
           this.$message.success("登录成功");
@@ -181,7 +244,14 @@ export default {
           this.$message.error(res.msg);
         }
       });
-    }
+    },
+    // 谷歌弹窗关闭
+    handleClose () {
+      this.codeNum = 1;
+      this.code = "";
+      this.qrcode = "";
+      this.codeVisible = false
+    },
   }
 };
 </script>
@@ -192,7 +262,7 @@ export default {
   justify-content: center;
   align-items: center;
   height: 100%;
-  background-image: url("../assets/image/login-background.jpg");
+  background-image: url('../assets/image/login-background.jpg');
   background-size: cover;
 }
 
@@ -251,5 +321,8 @@ export default {
   font-family: Arial;
   font-size: 12px;
   letter-spacing: 1px;
+}
+.qrcode-2fa {
+  text-align: center;
 }
 </style>

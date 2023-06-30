@@ -44,7 +44,8 @@ const user = {
           //           pid: process.env.NODE_ENV === 'development' ? 52 : '*',
           pid: process.env.VUE_APP_PID,
           username,
-          password
+          password,
+          ...userInfo
         }).then(res => {
           if (res.code === 0) {
             let _string = ''
@@ -59,6 +60,8 @@ const user = {
             setToken(res.data.access_token)
             setUser(username)
             commit('SET_TOKEN', res.data.token)
+            resolve(res)
+          } else if ([402, 407].includes(res.code)) {
             resolve(res)
           } else {
             Notification.error({
