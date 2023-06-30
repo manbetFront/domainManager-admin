@@ -1,4 +1,5 @@
 import Cookies from 'js-cookie'
+import { uniqueArr } from './index'
 
 const TokenKey = 'Admin-Token'
 const UserKey = 'username'
@@ -54,7 +55,7 @@ export function setSiteData(site) {
 }
 
 export function getSiteData() {
-  return Cookies.get(siteArr)
+  return uniqueArr(Cookies.get(siteArr).split(',')); //Cookies.get(siteArr)
 }
 // ===============end
 

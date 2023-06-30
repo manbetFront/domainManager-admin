@@ -87,7 +87,6 @@ import {
 import Pagination from "@/components/Pagination";
 import SearchForm from "./components/SearchForm";
 import { getSiteData } from "@/utils/auth";
-import { uniqueArr } from '@/utils/index'
 export default {
   // name: 'PayMoneyRecord',
   components: {
@@ -110,7 +109,7 @@ export default {
 
   computed: {
     sites(){
-      return uniqueArr(getSiteData().split(','));
+      return getSiteData();
     }
   },
 
