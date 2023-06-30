@@ -94,6 +94,7 @@ import {
   del
 } from "@/api/theme/domain/jump";
 import { getSiteData } from '@/utils/auth'
+import { uniqueArr } from '@/utils/index'
 import Pagination from "@/components/Pagination";
 import SearchForm from "./components/SearchForm";
 import EditDialog from "./components/editDialog";
@@ -121,7 +122,7 @@ export default {
 
   computed: {
     sites(){
-      return Array(getSiteData());
+      return uniqueArr(getSiteData().split(','));
     }
   },
 

@@ -58,7 +58,7 @@ import Pagination from "@/components/Pagination";
 import { list } from "@/api/theme/domain/flow";
 import FilterForm from "./components/FilterForm.vue";
 import { getSiteData } from "@/utils/auth";
-
+import { uniqueArr } from '@/utils/index'
 export default {
   components: {
     FilterForm,
@@ -87,7 +87,7 @@ export default {
 
   computed: {
     sites(){
-      return Array(getSiteData());
+      return uniqueArr(getSiteData().split(','));
     }
   },
 
