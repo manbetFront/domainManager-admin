@@ -59,7 +59,7 @@ export function jumpExpireList(obj) {
     const params = {
       ...obj
     }
-    // params.platform = getSiteData()
+    params.platform = getSiteData().toString();
     return request({
       url: '/api/main_host/expire',
       method: 'post',

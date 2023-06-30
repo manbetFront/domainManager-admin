@@ -59,7 +59,7 @@ export function proExpireList(obj) {
     const params = {
       ...obj
     }
-    params.platform = getSiteData()
+    params.platform = getSiteData().toString();
     return request({
       url: '/api/agent_host/expire',
       method: 'post',
