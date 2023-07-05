@@ -18,43 +18,43 @@ router.beforeEach(async(to, from, next) => {
       next({ path: '/' })
       NProgress.done()
     } else {
-      if (store.getters.roles.length === 0) {
-        // await store.dispatch('order/fetchOrderNotice')
-        await store.dispatch('order/getNumber1')
-        await store.dispatch('order/getNumber2')
-        // await store.dispatch('order/getNumber3')
-        // await store.dispatch('order/getNumber4')
+      if (store.getters.permission_routes.length > 0) {
+        next();
+      }else{
+        try {
+          // await store.dispatch('user/getInfo')
 
-        // 判断当前用户是否已拉取完user_info信息
-        store.dispatch('GetInfo').then(res => {
-          // 拉取user_info
-          const roles = res.roles
-          store.dispatch('GenerateRoutes', { roles }).then(accessRoutes => {
-            // 测试 默认静态页面
-            // store.dispatch('permission/generateRoutes', { roles }).then(accessRoutes => {
-            // for(let i = 0,length =accessRoutes.length;i<length;i++) {
-            //   const element = accessRoutes[i]
-            //   router.addRoute(element)
-            // }
-            // 根据roles权限生成可访问的路由表
-            router.addRoutes(accessRoutes) // 动态添加可访问路由表
-            next({ ...to, replace: true }) // hack方法 确保addRoutes已完成
-          })
-          // store.dispatch('order/fetchOrderNotice')
-          store.dispatch('order/getNumber1')
-          store.dispatch('order/getNumber2')
-          // store.dispatch('order/getNumber3')
-          // store.dispatch('order/getNumber4')
-          // store.dispatch('order/getWithdraw')
-        })
-          .catch(err => {
-            store.dispatch('FedLogOut').then(() => {
-              Message.error(err.message)
-              next({ path: '/' })
+          await store.dispatch('order/getNumber1')
+          await store.dispatch('order/getNumber2')
+          await store.dispatch('order/getNumber3')
+          
+          store.dispatch('GetInfo').then(res => {
+            // 拉取user_info
+            const roles = res.roles
+            store.dispatch('permission/generateRoutes', { roles }).then(accessRoutes => {
+              // 测试 默认静态页面
+              // store.dispatch('permission/generateRoutes', { roles }).then(accessRoutes => {
+              // for(let i = 0,length =accessRoutes.length;i<length;i++) {
+              //   const element = accessRoutes[i]
+              //   router.addRoute(element)
+              // }
+              // 根据roles权限生成可访问的路由表
+              router.addRoutes(accessRoutes) // 动态添加可访问路由表
+              next({ ...to, replace: true }) // hack方法 确保addRoutes已完成
             })
           })
-      } else {
-        next()
+
+          // const accessRoutes = await store.dispatch('permission/generateRoutes')
+          // for (let i = 0, len = accessRoutes.length; i < len; i++) {
+          //   router.addRoute(accessRoutes[i])
+          // }
+          // next({ ...to, replace: true })
+        } catch (error) {
+            store.dispatch('FedLogOut').then(() => {
+              Message.error(error)
+              next({ path: '/' })
+            })
+        }
       }
     }
   } else {

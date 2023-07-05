@@ -1,11 +1,17 @@
 <template>
   <div class="searchForm">
     <el-form ref="queryForm" :model="form" :inline="true" label-width="70px">
-      <!-- <el-form-item label="代理线">
-        <el-input v-model="form.agent_group" placeholder="请输入代理线"></el-input>
-      </el-form-item> -->
-      <el-form-item label="域名">
-        <el-input v-model="form.url" placeholder="请输入域名" style="width: 250px;"></el-input>
+      <el-form-item>
+        <el-input v-model="kwText" placeholder="请输入" clearable>
+          <el-select v-model="kwType" slot="prepend" style="width: 105px">
+            <el-option
+              v-for="(opt, index) in kwOptions"
+              :key="index"
+              :label="opt.label"
+              :value="opt.value"
+            />
+          </el-select>
+        </el-input>
       </el-form-item>
 
       <el-form-item>
@@ -49,6 +55,38 @@
         </el-select>
       </el-form-item>
 
+      <el-form-item label="域名类别">
+        <el-select
+          v-model="form.is_control"
+          placeholder="全部"
+          clearable
+          size="mini"
+        >
+          <el-option
+            v-for="dict in domainTypeOptions"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
+      </el-form-item>
+
+      <el-form-item label="警报状况">
+        <el-select
+          v-model="form.health"
+          placeholder="全部"
+          clearable
+          size="mini"
+        >
+          <el-option
+            v-for="dict in alarmTypeOptions"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
+      </el-form-item>
+
       <el-form-item>
         <el-button
           type="primary"
@@ -71,18 +109,29 @@ export default {
   props: {},
   data() {
     return {
+      kwType: "agent_group",
+      kwText: "",
+
       dateType: 1, 
       datetimeRange: [],
 
       form: {
-        agent_group: "",
-        url: "",
         status: ""
       },
     };
   },
 
   computed: {
+    kwOptions() {
+      return [
+        {label: '代理线', value: "agent_group" },
+        // { label: '代理code', value: "agent_code" },
+        // { label: '推广域名', value: "agent_host" },
+        { label: '跳转域名', value: "main_host_detail" },
+        // { label: '主域名', value: "main_host" },
+      ];
+    },
+
     dateTypeOptions() {
       return [
         { value: 1, label: '创建时间' },
@@ -96,9 +145,27 @@ export default {
         { value: 2, label: '禁用' },
       ];
     },
+
+    domainTypeOptions() {
+      return [
+        { value: 1, label: '可控域名' },
+        { value: 2, label: '不可控域名' },
+      ];
+    },
+
+    alarmTypeOptions() {
+      return [
+        { value: 1, label: '正常' },
+        { value: 2, label: '异常' },
+      ];
+    },
   },
 
-  watch: {},
+  watch: {
+    kwType() {
+      this.kwText = "";
+    },
+   },
 
   created() {},
 
@@ -107,7 +174,7 @@ export default {
   methods: {
     handleQuery() {
       const postData = {...this.form};
-      
+      postData[this.kwType] = this.kwText;
       if (this.datetimeRange) {
         if (this.dateType == 1) {
           postData.start_at = this.datetimeRange[0];
@@ -122,12 +189,12 @@ export default {
     },
     // 重置
     resetQuery() {
-      this.kwType = 1;
+      this.kwType = "agent_group";
+      this.kwText = "";
       this.form = { 
-        agent_group: "",
-        url: "",
         status: ""
       };
+      this.datetimeRange = [];
       this.$emit("resetQuery");
     }
   }

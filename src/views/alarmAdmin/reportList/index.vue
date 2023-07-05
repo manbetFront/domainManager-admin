@@ -1,5 +1,5 @@
 <template>
- <div class="app-container">
+<div class="app-container">
     <div class="list-common-query">
        <search-form @submit="handleQuery" @resetQuery="resetQuery" />
     </div>
@@ -24,61 +24,37 @@
         :max-height="650"
       >
         <!-- <el-table-column type="index" label="序号" width="80" align="center" /> -->
+        <el-table-column prop="agent_host_id" label="问题编号" width="80" align="center" />
         <el-table-column prop="agent_group" label="代理线" align="center" />
-        <el-table-column label="跳转域名" align="center" width="150">
+        <el-table-column label="域名" align="center" width="150">
           <template slot-scope="{ row }">
-           <a class="alink" @click="handleLink(row.main_host_detail)">{{ row.main_host_detail }}</a>
+           <a class="alink" @click="handleLink(row.agent_host)">{{ row.agent_host }}</a>
           </template>
         </el-table-column>
-        <el-table-column prop="remark" label="域名备注" align="center" min-width="150" />
-        <!-- <el-table-column prop="ip" label="服务器IP" align="center" min-width="120" /> -->
-        <el-table-column
-          prop="created_at"
-          label="创建时间"
-          width="180"
-          align="center"
-        />
-        <el-table-column label="到期时间" width="150" align="center">
-          <template slot-scope="{ row }">
-            <span v-if="row.near_expire === 1" style="color:#FF0000">{{ row.host_expire_at }}</span>
-            <span v-else>{{ row.host_expire_at }}</span>
-          </template>
+        <el-table-column prop="agent_remark" label="域名备注" align="center" width="150"/>
+       <el-table-column prop="host_type" label="域名类别" align="center" width="110">
+          <!-- <template slot-scope="{ row }">
+            <span>{{ domainClassText[row.domainclass]}}</span>
+          </template> -->
         </el-table-column>
-        <el-table-column prop="uv" label="总访问量" align="center" />
-        <el-table-column prop="register_num" label="总注册量" align="center" />
+        <el-table-column prop="created_at" label="回报时间" width="150" align="center" />
+        <el-table-column prop="remark" label="问题描述" width="150" align="center" />
         <el-table-column label="是否可控" align="center" width="110">
           <template slot-scope="{ row }">
             <span v-if="row.is_control === 1">可控域名</span>
             <span v-else>不可控域名</span>
           </template>
         </el-table-column>
-        <el-table-column label="警报状态" align="center" width="100" fixed="right">
+        <el-table-column label="状态" align="center" width="100">
           <template slot-scope="{ row }">
-            <span v-if="row.health === 1">正常</span>
-            <span v-else>异常</span>
+            <span v-if="row.alarm === 1">正常</span>
+            <span v-else>禁用</span>
           </template>
         </el-table-column>
-        <el-table-column
-          fixed="right"
-          prop="status"
-          label="状态"
-          min-width="80"
-          align="center"
-        >
-            <template slot-scope="{ row }">
-                <el-switch v-model="row.status" active-color="#13ce66"
-                :active-value="1" :inactive-value="2" @change="onSwitch(row)" />
-            </template>
-        </el-table-column>
-
-        <el-table-column fixed="right" label="操作" min-width="100" align="center">
-          <template slot-scope="{ row }">
-            <el-button v-if="row.health === 1" type="text" size="small" @click="handleReport(row)"
-              >回报</el-button
-            >
-            <el-button type="text" size="small" @click="handleEdit(row)"
-              >编辑</el-button
-            >
+        <el-table-column fixed="right" label="操作" width="100" align="center">
+          <template slot-scope="scope">
+            <el-button type="text" size="small" @click="handleReport(scope.row)"
+              >处理</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -86,39 +62,38 @@
 
     <!-- 分页 -->
     <div class="list-common-bars">
+      <div class="action-btn fl">
+        <el-button type="primary" @click="openDialog()">
+          新增域名
+        </el-button>
+      </div>
+
       <pagination
         class="fr"
         :total="total"
         :page.sync="listQuery.page"
-        :limit.sync="listQuery.size"
+        :limit.sync="listQuery.page_size"
         @pagination="getList"
       />
     </div>
     <!-- 编辑 -->
-    <edit-dialog :visible.sync="editDialog" ref="editDialog"/>
-
-     <!-- 异常回报 -->
-    <abnormal-report-dialog :visible.sync="reportDialog" ref="reportDialog" />
+    <edit-dialog :visible.sync="editDialog" ref="editDialog" />
 </div>
 </template>
 
 <script>
 import {
-  list,
-  del
-} from "@/api/theme/domain/jump";
+  reportList
+} from "@/api/theme/alarm/index";
 import { getSiteData } from '@/utils/auth'
 import Pagination from "@/components/Pagination";
 import SearchForm from "./components/SearchForm";
 import EditDialog from "./components/editDialog";
-import AbnormalReportDialog from "../../components/abnormalReportDialog";
 export default {
-  // name: 'VirtualOrder',
   components: {
     SearchForm,
     Pagination,
     EditDialog,
-    AbnormalReportDialog
   },
   props: {},
   data() {
@@ -137,6 +112,14 @@ export default {
   },
 
   computed: {
+    domainClassText() {
+      return {
+        1: '主域名',
+        2: '跳转域名',
+        3: '推广域名',
+      };
+    },
+
     sites(){
       return getSiteData();
     }
@@ -174,58 +157,25 @@ export default {
     // 查询列表
     getList() {
       this.loading = true;
-      this.$store.dispatch("order/getNumber2");
-      list({ ...this.listQuery })
+      reportList({ ...this.listQuery })
         .then(response => {
           if (response.code === 200) {
             const data = response.data || [];
             this.tableData = data.data;
             this.total = data.total;
             this.loading = false;
+            this.$store.dispatch("order/refreshNumber3", this.total);
           }
         })
         .catch(() => {
           this.loading = false;
         });
     },
-    // 编辑
-    handleEdit(rowData) {
+
+    //回报
+    handleReport(rowData){
       this.editDialog = true;
       this.$refs.editDialog.open(rowData, this.tabActive);
-    },
-
-    openDialog(){
-      this.editDialog = true;
-      this.$refs.editDialog.open(null, this.tabActive);
-    },
-
-    onSwitch(row) {
-      update({
-       ...row,
-       status: Number(row.status),
-       platform: this.tabActive,
-      }).then(res => {
-        if (res.code === 200) {
-          this.$message.success('编辑成功');
-          this.getList();
-        } else {
-          this.$message.error(res.msg);
-          this.$set(row, 'status', Number(row.status) === 1 ? 2 :1);
-        }
-      })
-    },
-
-   //回报
-    handleReport(rowData){
-      this.reportDialog = true;
-      const params = {
-        id: rowData.id,
-        agent_group: rowData.agent_group,
-        url: rowData.main_host_detail,
-        remark: "",
-        host_type: "跳转域名",
-      }
-      this.$refs.reportDialog.open(params, this.tabActive);
     },
 
     handleLink(link) {

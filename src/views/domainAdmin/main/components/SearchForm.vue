@@ -116,7 +116,6 @@ export default {
       datetimeRange: [],
 
       form: {
-        status: ""
       },
     };
   },
@@ -125,9 +124,9 @@ export default {
     kwOptions() {
       return [
         {label: '代理线', value: "agent_group" },
-        { label: '代理code', value: "agent_code" },
-        { label: '推广域名', value: "url" },
-        { label: '跳转域名', value: "main_host_detail" },
+        // { label: '代理code', value: "agent_code" },
+        // { label: '推广域名', value: "agent_host" },
+        // { label: '跳转域名', value: "main_host_detail" },
         { label: '主域名', value: "url" },
       ];
     },
@@ -174,7 +173,9 @@ export default {
   methods: {
     handleQuery() {
       const postData = {...this.form};
-      postData[this.kwType] = this.kwText;
+      if(this.kwText){
+        postData[this.kwType] = this.kwText;
+      }
       if (this.datetimeRange) {
         if (this.dateType == 1) {
           postData.start_at = this.datetimeRange[0];
@@ -192,7 +193,6 @@ export default {
       this.kwType = "agent_group";
       this.kwText = "";
       this.form = { 
-        status: ""
       };
       this.datetimeRange = [];
       this.$emit("resetQuery");

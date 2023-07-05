@@ -12,11 +12,8 @@
       <!-- <el-form-item label="代理线" prop="agent_group">
         <el-input v-model="form.agent_group" />
       </el-form-item> -->
-      <!-- <el-form-item label="主域名" prop="host">
+      <el-form-item label="主域名" prop="host">
         <el-input v-model="form.host" />
-      </el-form-item> -->
-      <el-form-item label="跳转域名">
-        <span>{{ form.main_host_detail }}</span>
       </el-form-item>
       <!-- <el-form-item label="服务器IP">
         <el-input v-model="form.ip" />
@@ -24,7 +21,7 @@
       <el-form-item label="域名备注" prop="remark">
         <el-input v-model="form.remark" />
       </el-form-item>
-      <!-- <el-form-item label="到期时间" prop="host_expire_at">
+      <el-form-item label="到期时间" prop="host_expire_at">
         <el-date-picker
           v-model="form.host_expire_at"
           type="datetime"
@@ -32,7 +29,13 @@
           value-format="yyyy-MM-dd HH:mm:ss"
           class="w-100"
         />
-      </el-form-item> -->
+      </el-form-item>
+      <el-form-item label="域名类别" prop="is_control">
+        <el-radio-group v-model="form.is_control">
+          <el-radio :label="1">可控域名</el-radio>
+          <el-radio :label="2">不可控域名</el-radio>
+        </el-radio-group>
+      </el-form-item>
       <el-form-item label="状态" prop="status">
         <el-radio-group v-model="form.status">
           <el-radio :label="1">启用</el-radio>
@@ -64,6 +67,7 @@ export default {
     return {
       dialogTitle: '新增',
       form: {
+        is_control: 1,
         status: 1
       },
       confirming: false,
@@ -105,6 +109,7 @@ export default {
       }else{
         this.form = {
           status: 1,
+          is_control: 1,
           platform: selSite
         };
         this.dialogTitle = "新增";
