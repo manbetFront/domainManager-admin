@@ -50,7 +50,7 @@
 </template>
 
 <script>
-import { create, update } from '@/api/theme/domain/jump'
+import { update } from '@/api/theme/domain/jump'
 export default {
   name: 'EditDialog',
   components: {},
@@ -96,51 +96,16 @@ export default {
 
   methods: {
     open (rowData, selSite) {
-      if(rowData){
         this.form = { 
           ...rowData, 
           platform: selSite
         }
         this.dialogTitle = "编辑";
-      }else{
-        this.form = {
-          status: 1,
-          platform: selSite
-        };
-        this.dialogTitle = "新增";
-      }
+      
       this.formVisible = true
     },
     
     handleConfirm () {
-      if(this.form.id){
-        this.edit();
-      }else{
-        this.create();
-      }
-    },
-
-    create(){
-      if(this.confirming)return;
-      this.confirming = true;
-      this.$refs['form'].validate(valid => {
-        if (!valid) {
-          this.confirming = false;
-          return;
-        }
-        create(this.form).then(res => {
-          this.formVisible = false;
-          if (res.code !== 200) {
-            return this.$message.error(res.msg)
-          }
-          this.$parent.getList()
-          this.$message.success("创建成功");
-          this.confirming = false;
-        })
-      })
-    },
-
-    edit(){
       if(this.confirming)return;
       this.confirming = true;
       this.$refs['form'].validate(valid => {

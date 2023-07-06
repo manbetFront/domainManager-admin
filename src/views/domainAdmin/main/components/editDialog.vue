@@ -13,7 +13,7 @@
         <el-input v-model="form.agent_group" />
       </el-form-item> -->
       <el-form-item label="主域名" prop="host">
-        <el-input v-model="form.host" />
+        <el-input v-model="form.host" :disabled="form.id > 0" />
       </el-form-item>
       <!-- <el-form-item label="服务器IP">
         <el-input v-model="form.ip" />
@@ -53,7 +53,7 @@
 </template>
 
 <script>
-import { create, update } from '@/api/theme/domain/jump'
+import { create, update } from '@/api/theme/domain/main'
 export default {
   name: 'EditDialog',
   components: {},
