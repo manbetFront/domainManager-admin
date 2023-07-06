@@ -195,6 +195,7 @@ export default {
         status: ""
       };
       this.datetimeRange = [];
+      this.dateType == 1
       this.$emit("resetQuery");
     }
   }

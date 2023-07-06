@@ -36,7 +36,7 @@
           <el-radio :label="2">不可控域名</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="状态" prop="status">
+      <el-form-item label="状态" prop="status" v-if="form.is_control === 1">
         <el-radio-group v-model="form.status">
           <el-radio :label="1">启用</el-radio>
           <el-radio :label="2">禁用</el-radio>

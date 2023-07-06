@@ -72,8 +72,9 @@
           align="center"
         >
           <template slot-scope="{ row }">
-            <el-switch v-model="row.status" active-color="#13ce66"
+            <el-switch v-if="row.is_control === 1" v-model="row.status" active-color="#13ce66"
             :active-value="1" :inactive-value="2" @change="onSwitch(row)" />
+            <span v-else>-</span>
           </template>
         </el-table-column>
 

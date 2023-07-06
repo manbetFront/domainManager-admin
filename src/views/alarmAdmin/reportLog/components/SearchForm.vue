@@ -8,7 +8,34 @@
         <el-input v-model="form.url" placeholder="请输入域名" style="width: 250px;"></el-input>
       </el-form-item>
 
-      <el-form-item label="操作时间">
+      <el-form-item label="状态">
+        <el-select
+          v-model="form.status"
+          placeholder="全部"
+          clearable
+          size="mini"
+        >
+          <el-option
+            v-for="dict in statusOptions"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
+      </el-form-item>
+
+      <el-form-item>
+        <div class="el-input-group">
+          <div class="el-input-group__prepend">
+            <el-select v-model="dateType" style="width: 110px">
+              <el-option
+                v-for="(opt, index) in dateTypeOptions"
+                :key="index"
+                :label="opt.label"
+                :value="opt.value"
+              />
+            </el-select>
+          </div>
           <el-date-picker
             v-model="datetimeRange"
             type="datetimerange"
@@ -19,6 +46,7 @@
             value-format="yyyy-MM-dd HH:mm:ss"
             clearable
           />
+        </div>
       </el-form-item>
 
       <el-form-item>
@@ -43,6 +71,7 @@ export default {
   props: {},
   data() {
     return {
+      dateType: 1, 
       datetimeRange: [],
 
       form: {
@@ -52,6 +81,19 @@ export default {
   },
 
   computed: {
+     statusOptions() {
+      return [
+        { value: 1, label: '已解决' },
+        { value: 2, label: '待处理' },
+      ];
+    },
+
+    dateTypeOptions() {
+      return [
+        { value: 1, label: '回报时间' },
+        { value: 2, label: '处理时间' },
+      ];
+    },
   },
 
   watch: {},
@@ -65,11 +107,11 @@ export default {
     handleQuery() {
       const postData = {...this.form};
       
-      if (this.datetimeRange) {
-          postData.start_at = this.datetimeRange[0];
-          postData.end_at = this.datetimeRange[1];
+     if (this.datetimeRange) {
+        postData.time_type = this.dateType;
+        postData.start_at = this.datetimeRange[0];
+        postData.end_at = this.datetimeRange[1];
       }
-
       this.$emit("submit", postData);
     },
     // 重置
@@ -79,6 +121,7 @@ export default {
         url: "",
       };
       this.datetimeRange = [];
+      this.dateType == 1
       this.$emit("resetQuery");
     }
   }

@@ -40,7 +40,7 @@
               <span v-else>不可控域名</span>
             </template>
         </el-table-column>
-        <el-table-column label="状态" align="center" width="90">
+        <el-table-column label="状态" align="center" width="90"  fixed="right">
           <template slot-scope="{ row }">
             <span v-if="row.status === 1">已解决</span>
             <span v-else>待处理</span>
