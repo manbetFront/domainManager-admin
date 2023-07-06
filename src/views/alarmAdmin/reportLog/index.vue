@@ -26,7 +26,7 @@
         :max-height="650"
       >
         <!-- <el-table-column label="序号" width="80" type="index" align="center" /> -->
-        <el-table-column prop="agent_host_id" label="问题编号" width="80" align="center" />
+        <el-table-column prop="id" label="问题编号" width="80" align="center" />
         <el-table-column prop="agent_group" label="代理线" width="100" align="center" />
         <el-table-column prop="agent_host" label="域名" width="220" align="center" />
         <el-table-column prop="agent_remark" label="域名备注" width="220" align="center" />
@@ -42,7 +42,7 @@
         </el-table-column>
         <el-table-column label="状态" align="center" width="90">
           <template slot-scope="{ row }">
-            <span v-if="row.alarm === 1">已解决</span>
+            <span v-if="row.status === 1">已解决</span>
             <span v-else>待处理</span>
           </template>
         </el-table-column>

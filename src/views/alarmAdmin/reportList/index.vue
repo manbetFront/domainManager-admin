@@ -24,7 +24,7 @@
         :max-height="650"
       >
         <!-- <el-table-column type="index" label="序号" width="80" align="center" /> -->
-        <el-table-column prop="agent_host_id" label="问题编号" width="80" align="center" />
+        <el-table-column prop="id" label="问题编号" width="80" align="center" />
         <el-table-column prop="agent_group" label="代理线" align="center" />
         <el-table-column label="域名" align="center" width="150">
           <template slot-scope="{ row }">
@@ -47,7 +47,7 @@
         </el-table-column>
         <el-table-column label="状态" align="center" width="100">
           <template slot-scope="{ row }">
-            <span v-if="row.alarm === 1">正常</span>
+            <span v-if="row.host_status === 1">正常</span>
             <span v-else>禁用</span>
           </template>
         </el-table-column>
@@ -62,12 +62,6 @@
 
     <!-- 分页 -->
     <div class="list-common-bars">
-      <div class="action-btn fl">
-        <el-button type="primary" @click="openDialog()">
-          新增域名
-        </el-button>
-      </div>
-
       <pagination
         class="fr"
         :total="total"

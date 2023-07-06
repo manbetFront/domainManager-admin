@@ -20,7 +20,7 @@
           <span>{{ form.agent_host }}</span>
         </el-form-item>
         <el-form-item label="问题描述">
-          <el-input v-model="form.remark" />
+          <span>{{ form.remark }}</span>
         </el-form-item>
         <el-form-item label="处理结果描述" prop="result_desc">
           <el-input v-model="form.result_desc" type="textarea" :autosize="{ minRows: 5, maxRows: 10}"/>

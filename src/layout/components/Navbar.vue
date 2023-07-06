@@ -22,13 +22,13 @@
                <el-divider />
             </div>
             <div v-for="item in unReadMsgReportData" :key="item.id" class="pop-ques" @click="goReportList(item)">
-              <p>问题#{{ item.id }} 待处理：</p>
+              <p>问题#{{ item.rid }} 待处理：</p>
               <p>域名：{{ item.host }}</p>
               <p>问题描述：{{ item.remark }}</p>
               <el-divider />
             </div>
             <div v-for="item in unReadMsgLogData" :key="item.id" class="pop-ques" @click="goReportLog(item)">
-              <p>问题#{{ item.id }} 已处理：</p>
+              <p>问题#{{ item.rid }} 已处理：</p>
               <p>域名：{{ item.host }}</p>
               <p>问题描述：{{ item.remark }}</p>
               <p>处理结果备注：{{ item.result }}</p>
