@@ -21,8 +21,8 @@
       <!-- <el-form-item label="服务器IP">
         <el-input v-model="form.ip" />
       </el-form-item> -->
-      <el-form-item label="域名备注" prop="remark">
-        <el-input v-model="form.remark" />
+      <el-form-item label="域名备注" prop="main_host_detail_remark">
+        <el-input v-model="form.main_host_detail_remark" />
       </el-form-item>
       <!-- <el-form-item label="到期时间" prop="host_expire_at">
         <el-date-picker
@@ -33,12 +33,12 @@
           class="w-100"
         />
       </el-form-item> -->
-      <el-form-item label="状态" prop="status">
+      <!-- <el-form-item label="状态" prop="status">
         <el-radio-group v-model="form.status">
           <el-radio :label="1">启用</el-radio>
           <el-radio :label="2">禁用</el-radio>
         </el-radio-group>
-      </el-form-item>
+      </el-form-item> -->
     </el-form>
     <div slot="footer">
       <el-button @click="formVisible = false">取消</el-button>
@@ -68,9 +68,9 @@ export default {
       },
       confirming: false,
       dialogRule: {
-        host: [{ required: true, message: "请输入跳转域名", trigger: 'blur' }],
+        // host: [{ required: true, message: "请输入跳转域名", trigger: 'blur' }],
         // ip: [{ required: true, message: "请输入", trigger: 'blur' }],
-        status: [{ required: true, message: "请选择状态", trigger: ['blur', 'change'] }],
+        // status: [{ required: true, message: "请选择状态", trigger: ['blur', 'change'] }],
       },
     }
   },

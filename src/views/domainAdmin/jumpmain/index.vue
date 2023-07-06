@@ -30,7 +30,7 @@
            <a class="alink" @click="handleLink(row.main_host_detail)">{{ row.main_host_detail }}</a>
           </template>
         </el-table-column>
-        <el-table-column prop="remark" label="域名备注" align="center" min-width="150" />
+        <el-table-column prop="main_host_detail_remark" label="域名备注" align="center" min-width="150" />
         <!-- <el-table-column prop="ip" label="服务器IP" align="center" min-width="120" /> -->
         <el-table-column
           prop="created_at"
@@ -58,7 +58,7 @@
             <span v-else>异常</span>
           </template>
         </el-table-column>
-        <el-table-column
+        <!-- <el-table-column
           fixed="right"
           prop="status"
           label="状态"
@@ -69,7 +69,7 @@
                 <el-switch v-model="row.status" active-color="#13ce66"
                 :active-value="1" :inactive-value="2" @change="onSwitch(row)" />
             </template>
-        </el-table-column>
+        </el-table-column> -->
 
         <el-table-column fixed="right" label="操作" min-width="100" align="center">
           <template slot-scope="{ row }">

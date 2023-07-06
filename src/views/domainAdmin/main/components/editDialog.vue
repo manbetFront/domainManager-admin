@@ -30,7 +30,7 @@
           class="w-100"
         />
       </el-form-item>
-      <el-form-item label="域名类别" prop="is_control">
+      <el-form-item label="是否可控" prop="is_control">
         <el-radio-group v-model="form.is_control">
           <el-radio :label="1">可控域名</el-radio>
           <el-radio :label="2">不可控域名</el-radio>

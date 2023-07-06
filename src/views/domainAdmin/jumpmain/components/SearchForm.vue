@@ -39,7 +39,7 @@
         </div>
       </el-form-item>
 
-      <el-form-item label="状态">
+      <!-- <el-form-item label="状态">
         <el-select
           v-model="form.status"
           placeholder="全部"
@@ -53,9 +53,9 @@
             :value="dict.value"
           />
         </el-select>
-      </el-form-item>
+      </el-form-item> -->
 
-      <el-form-item label="域名类别">
+      <el-form-item label="是否可控">
         <el-select
           v-model="form.is_control"
           placeholder="全部"
