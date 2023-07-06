@@ -10,7 +10,7 @@
 
       <el-form-item label="域名类别">
         <el-select
-          v-model="form.domainClass"
+          v-model="form.host_type"
           placeholder="全部"
           clearable
           size="mini"
@@ -78,9 +78,9 @@ export default {
 
     domainClassOptions() {
       return [
-        { value: 1, label: '推广域名' },
-        { value: 2, label: '跳转域名' },
-        { value: 3, label: '主域名' },
+        { value: '推广域名', label: '推广域名' },
+        { value: '跳转域名', label: '跳转域名' },
+        { value: '主域名', label: '主域名' },
       ];
     },
   },
