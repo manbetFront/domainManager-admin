@@ -47,7 +47,7 @@
         </el-table-column>
         <el-table-column label="状态" align="center" width="100">
           <template slot-scope="{ row }">
-            <span v-if="row.host_status === 1">正常</span>
+            <span v-if="row.host_status === 1">启用</span>
             <span v-else>禁用</span>
           </template>
         </el-table-column>

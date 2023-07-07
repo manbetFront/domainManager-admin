@@ -127,7 +127,7 @@ export default {
         {label: '代理线', value: "agent_group" },
         // { label: '代理code', value: "agent_code" },
         // { label: '推广域名', value: "agent_host" },
-        { label: '跳转域名', value: "main_host_detail" },
+        { label: '跳转域名', value: "host" },
         // { label: '主域名', value: "main_host" },
       ];
     },

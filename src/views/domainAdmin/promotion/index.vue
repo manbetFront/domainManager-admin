@@ -266,11 +266,7 @@ export default {
     },
 
     handleLink(link) {
-      if(link.indexOf('https') > -1){
-        window.open(link);
-      }else {
-        window.open("https://www." + link);
-      }
+      window.open("https://" + link);
     },
   }
 };

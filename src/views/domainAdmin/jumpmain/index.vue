@@ -27,10 +27,10 @@
         <el-table-column prop="agent_group" label="代理线" align="center" />
         <el-table-column label="跳转域名" align="center" width="150">
           <template slot-scope="{ row }">
-           <a class="alink" @click="handleLink(row.main_host_detail)">{{ row.main_host_detail }}</a>
+           <a class="alink" @click="handleLink(row.host)">{{ row.host }}</a>
           </template>
         </el-table-column>
-        <el-table-column prop="main_host_detail_remark" label="域名备注" align="center" min-width="150" />
+        <el-table-column prop="remark" label="域名备注" align="center" min-width="150" />
         <!-- <el-table-column prop="ip" label="服务器IP" align="center" min-width="120" /> -->
         <el-table-column
           prop="created_at"
@@ -221,7 +221,7 @@ export default {
       const params = {
         id: rowData.id,
         agent_group: rowData.agent_group,
-        url: rowData.main_host_detail,
+        url: rowData.host,
         remark: "",
         host_type: "跳转域名",
       }
@@ -229,11 +229,7 @@ export default {
     },
 
     handleLink(link) {
-      if(link.indexOf('https') > -1){
-        window.open(link);
-      }else {
-        window.open("https://www." + link);
-      }
+      window.open(link);
     },
   }
 };

@@ -27,7 +27,7 @@
         <el-table-column prop="agent_group" label="代理线" align="center" />
         <el-table-column label="主域名" align="center" width="150">
           <template slot-scope="{ row }">
-           <a class="alink" @click="handleLink(row.host)">{{ row.host }}</a>
+           <a class="alink" @click="handleLink(row)">{{ row.host }}</a>
           </template>
         </el-table-column>
         <el-table-column prop="remark" label="域名备注" align="center" min-width="150" />
@@ -251,11 +251,11 @@ export default {
       this.$refs.reportDialog.open(params, this.tabActive);
     },
 
-    handleLink(link) {
-      if(link.indexOf('https') > -1){
-        window.open(link);
+    handleLink(row) {
+      if(row.is_control === 1){
+        window.open("https://www." + row.host);
       }else {
-        window.open("https://www." + link);
+        window.open("https://" + row.host);
       }
     },
   }

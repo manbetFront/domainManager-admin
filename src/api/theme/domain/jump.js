@@ -23,7 +23,7 @@ export function update(obj) {
   // params.platform = getSiteData()
   return request({
     url: '/api/agent_host/main_host_detail_update',
-    method: 'get',
+    method: 'post',
     params
   })
 }

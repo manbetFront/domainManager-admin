@@ -16,13 +16,13 @@
         <el-input v-model="form.host" />
       </el-form-item> -->
       <el-form-item label="跳转域名">
-        <span>{{ form.main_host_detail }}</span>
+        <span>{{ form.host }}</span>
       </el-form-item>
       <!-- <el-form-item label="服务器IP">
         <el-input v-model="form.ip" />
       </el-form-item> -->
-      <el-form-item label="域名备注" prop="main_host_detail_remark">
-        <el-input v-model="form.main_host_detail_remark" />
+      <el-form-item label="域名备注" prop="remark">
+        <el-input v-model="form.remark" />
       </el-form-item>
       <!-- <el-form-item label="到期时间" prop="host_expire_at">
         <el-date-picker
