@@ -71,7 +71,7 @@ export default {
   props: {},
   data() {
     return {
-      dateType: 1, 
+      dateType: 'created_at', 
       datetimeRange: [],
 
       form: {
@@ -90,8 +90,8 @@ export default {
 
     dateTypeOptions() {
       return [
-        { value: 1, label: '回报时间' },
-        { value: 2, label: '处理时间' },
+        { value: 'created_at', label: '回报时间' },
+        { value: 'fix_at', label: '处理时间' },
       ];
     },
   },
@@ -121,7 +121,7 @@ export default {
         url: "",
       };
       this.datetimeRange = [];
-      this.dateType == 1
+      this.dateType == 'created_at'
       this.$emit("resetQuery");
     }
   }

@@ -45,7 +45,7 @@
           </template>
         </el-table-column>
         <el-table-column prop="uv" label="总访问量" align="center" />
-        <el-table-column prop="register_num" label="总注册量" align="center" />
+        <!-- <el-table-column prop="register_num" label="总注册量" align="center" /> -->
         <el-table-column label="是否可控" align="center" width="110">
           <template slot-scope="{ row }">
             <span v-if="row.is_control === 1">可控域名</span>
