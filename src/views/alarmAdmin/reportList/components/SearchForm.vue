@@ -26,7 +26,7 @@
 
       <el-form-item label="状态">
         <el-select
-          v-model="form.status"
+          v-model="form.host_status"
           placeholder="全部"
           clearable
           size="mini"
@@ -63,7 +63,7 @@ export default {
   data() {
     return {
       form: {
-        status: ""
+        host_status: ""
       },
     };
   },
@@ -101,7 +101,7 @@ export default {
     // 重置
     resetQuery() {
       this.form = { 
-        status: ""
+        host_status: ""
       };
       this.datetimeRange = [];
       this.$emit("resetQuery");
