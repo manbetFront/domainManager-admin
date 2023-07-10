@@ -1,5 +1,5 @@
 <template>
-<div class="app-container">
+ <div class="app-container">
     <div class="list-common-query">
        <search-form @submit="handleQuery" @resetQuery="resetQuery" />
     </div>
@@ -25,23 +25,17 @@
       >
         <!-- <el-table-column type="index" label="序号" width="80" align="center" /> -->
         <el-table-column prop="agent_group" label="代理线" align="center" />
-        <el-table-column prop="agent_code" label="代理code" align="center" />
-        <el-table-column label="推广域名" align="center" width="150">
-          <template slot-scope="{ row }">
-           <a class="alink" @click="handleLink(row.agent_host)">{{ row.agent_host }}</a>
-          </template>
-        </el-table-column>
-        <el-table-column prop="main_host_detail" label="跳转域名" align="center" width="220"/>
         <el-table-column label="主域名" align="center" width="150">
           <template slot-scope="{ row }">
-           <a class="alink" @click="handleMainLink(row.main_host)">{{ row.main_host }}</a>
+           <a class="alink" @click="handleLink(row)">{{ row.host }}</a>
           </template>
         </el-table-column>
-        <el-table-column prop="remark" label="域名备注" align="center" width="150"/>
+        <el-table-column prop="remark" label="域名备注" align="center" min-width="150" />
+        <!-- <el-table-column prop="ip" label="服务器IP" align="center" min-width="120" /> -->
         <el-table-column
           prop="created_at"
           label="创建时间"
-          width="150"
+          width="180"
           align="center"
         />
         <el-table-column label="到期时间" width="150" align="center">
@@ -58,27 +52,20 @@
             <span v-else>不可控域名</span>
           </template>
         </el-table-column>
-        <el-table-column label="警报状态" align="center" width="100" fixed="right">
+        <el-table-column label="警报状态" align="center" fixed="right" width="100">
           <template slot-scope="{ row }">
             <span v-if="row.health === 1">正常</span>
             <span v-else>异常</span>
           </template>
         </el-table-column>
-        <el-table-column
-          fixed="right"
-          prop="status"
-          label="状态"
-          width="100"
-          align="center"
-        >
-          <template slot-scope="{ row }">
-            <el-switch v-if="row.is_control === 1" v-model="row.status" active-color="#13ce66"
-            :active-value="1" :inactive-value="2" @change="onSwitch(row)" />
-            <span v-else>-</span>
-          </template>
+        <el-table-column fixed="right" prop="status" label="状态" min-width="80" align="center">
+            <template slot-scope="{ row }">
+                <el-switch v-if="row.is_control === 1" v-model="row.status" active-color="#13ce66"
+                :active-value="1" :inactive-value="2" @change="onSwitch(row)" />
+                <span v-else>-</span>
+            </template>
         </el-table-column>
-
-        <el-table-column fixed="right" label="操作" width="160" align="center">
+        <el-table-column fixed="right" label="操作" min-width="160" align="center">
           <template slot-scope="{ row }">
             <el-button v-if="row.health === 1" type="text" size="small" @click="handleReport(row)"
               >回报</el-button
@@ -111,9 +98,8 @@
       />
     </div>
     <!-- 编辑 -->
-    <edit-dialog :visible.sync="editDialog" ref="editDialog" />
-
-    <!-- 异常回报 -->
+    <edit-dialog :visible.sync="editDialog" ref="editDialog"/>
+     <!-- 异常回报 -->
     <abnormal-report-dialog :visible.sync="reportDialog" ref="reportDialog" />
 </div>
 </template>
@@ -123,7 +109,7 @@ import {
   list,
   update,
   del
-} from "@/api/theme/domain/promotion";
+} from "@/api/theme/domain/main";
 import { getSiteData } from '@/utils/auth'
 import Pagination from "@/components/Pagination";
 import SearchForm from "./components/SearchForm";
@@ -191,7 +177,7 @@ export default {
     // 查询列表
     getList() {
       this.loading = true;
-      this.$store.dispatch("order/getNumber1");
+      this.$store.dispatch("order/getNumber2");
       list({ ...this.listQuery })
         .then(response => {
           if (response.code === 200) {
@@ -245,32 +231,32 @@ export default {
               return;
             }
             this.$message.success("刪除成功");
-            this.$store.dispatch("order/getNumber1");
+            this.$store.dispatch("order/getNumber2");
             this.getList();
           });
         })
         .catch(() => {});
     },
 
-    //回报
+     //回报
     handleReport(rowData){
       this.reportDialog = true;
       const params = {
         id: rowData.id,
         agent_group: rowData.agent_group,
-        url: rowData.agent_host,
+        url: rowData.host,
         remark: "",
-        host_type: "推广域名",
+        host_type: "主域名",
       }
       this.$refs.reportDialog.open(params, this.tabActive);
     },
 
-    handleLink(link) {
-      window.open("https://" + link);
-    },
-
-    handleMainLink(link) {
-      window.open("https://www." + link);
+    handleLink(row) {
+      if(row.is_control === 1){
+        window.open("https://www." + row.host);
+      }else {
+        window.open("https://" + row.host);
+      }
     },
   }
 };

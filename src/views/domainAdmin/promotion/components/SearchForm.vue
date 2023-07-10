@@ -55,6 +55,38 @@
         </el-select>
       </el-form-item>
 
+      <el-form-item label="是否可控">
+        <el-select
+          v-model="form.is_control"
+          placeholder="全部"
+          clearable
+          size="mini"
+        >
+          <el-option
+            v-for="dict in domainTypeOptions"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
+      </el-form-item>
+
+      <el-form-item label="警报状况">
+        <el-select
+          v-model="form.health"
+          placeholder="全部"
+          clearable
+          size="mini"
+        >
+          <el-option
+            v-for="dict in alarmTypeOptions"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
+      </el-form-item>
+
       <el-form-item>
         <el-button
           type="primary"
@@ -77,7 +109,7 @@ export default {
   props: {},
   data() {
     return {
-      kwType: "url",
+      kwType: "agent_group",
       kwText: "",
 
       dateType: 1, 
@@ -92,9 +124,11 @@ export default {
   computed: {
     kwOptions() {
       return [
-        { label: '推广域名', value: "url" },
-        { label: '代理线', value: "agent_group" },
+        {label: '代理线', value: "agent_group" },
         { label: '代理code', value: "agent_code" },
+        { label: '推广域名', value: "url" },
+        { label: '跳转域名', value: "main_host_detail" },
+        { label: '主域名', value: "url" },
       ];
     },
 
@@ -109,6 +143,20 @@ export default {
       return [
         { value: 1, label: '启用' },
         { value: 2, label: '禁用' },
+      ];
+    },
+
+    domainTypeOptions() {
+      return [
+        { value: 1, label: '可控域名' },
+        { value: 2, label: '不可控域名' },
+      ];
+    },
+
+    alarmTypeOptions() {
+      return [
+        { value: 1, label: '正常' },
+        { value: 2, label: '异常' },
       ];
     },
   },
@@ -141,7 +189,7 @@ export default {
     },
     // 重置
     resetQuery() {
-      this.kwType = "url";
+      this.kwType = "agent_group";
       this.kwText = "";
       this.form = { 
         status: ""

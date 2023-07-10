@@ -34,7 +34,7 @@
 
     <!-- 分页 -->
     <!-- <div class="list-common-bars">
-      <pagination :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.page_size" @pagination="getList" />
+      <pagination :total="total" :page.sync="listQuery.page" :size.sync="listQuery.page_size" @pagination="getList" />
     </div> -->
     <!-- 编辑 -->
     <edit-dialog ref="editDialog" />

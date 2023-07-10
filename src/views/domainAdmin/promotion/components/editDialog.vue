@@ -17,7 +17,7 @@
           <el-input v-model="form.agent_code" />
         </el-form-item>
         <el-form-item label="推广域名" prop="agent_host">
-          <el-input v-model="form.agent_host" />
+          <el-input v-model="form.agent_host" :disabled="form.id ? true : false"/>
         </el-form-item>
         <el-form-item label="主域名" prop="main_host">
           <el-input v-model="form.main_host" />
@@ -34,7 +34,13 @@
             class="w-100"
           />
         </el-form-item>
-        <el-form-item label="状态" prop="status">
+        <el-form-item label="是否可控" prop="is_control">
+          <el-radio-group v-model="form.is_control">
+            <el-radio :label="1">可控域名</el-radio>
+            <el-radio :label="2">不可控域名</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="状态" prop="status" v-if="form.is_control === 1">
           <el-radio-group v-model="form.status">
             <el-radio :label="1">启用</el-radio>
             <el-radio :label="2">禁用</el-radio>
@@ -66,6 +72,7 @@ export default {
     return {
       dialogTitle: '新增',
       form: {
+        is_control: 1,
         status: 1
       },
       confirming: false,
@@ -106,6 +113,7 @@ export default {
         this.dialogTitle = "编辑";
       }else{
         this.form = {
+          is_control: 1,
           status: 1,
           platform: selSite
         };

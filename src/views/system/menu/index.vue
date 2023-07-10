@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container">
+  <div class="app-container" v-loading.fullscreen="loading">
     <el-row>
       <el-col :span="11">
         <div class="mb20">角色</div>
@@ -11,7 +11,7 @@
         >
           <el-form-item label="" prop="name">
             <el-input
-              placeholder="输入角色"
+              placeholder="请输入角色"
               v-model="queryParams.name"
               clearable
             ></el-input>
@@ -27,12 +27,12 @@
             >
           </el-form-item>
         </el-form>
-        <ul class="role-box" v-loading="roleLoading">
+        <ul class="role-box">
           <li
             v-for="item in roleList"
             :key="item.id"
             class="role"
-            @click="changeRole(item.id)"
+            @click="changeRole(item)"
             :class="{ active: roleIndex === item.id }"
           >
             {{ item.name }}
@@ -57,10 +57,8 @@
             show-checkbox
             default-expand-all
             node-key="id"
-            :default-checked-keys="checkedList"
+            :check-strictly="checkStrictly"
             ref="tree"
-            :check-strictly="true"
-            @check-change="clickTreeDeal"
             :props="defaultProps"
           >
           </el-tree>
@@ -68,11 +66,11 @@
         <div>
           <el-button
             type="primary"
-            size="small"
             v-if="configList.length"
             @click="submitForm"
-            >保存</el-button
-          >
+            >
+              保存
+            </el-button>
         </div>
       </el-col>
     </el-row>
@@ -80,24 +78,19 @@
 </template>
 
 <script>
-import {
-  roleList,
-  SystemMenuList,
-  SystemMenuSave,
-} from "@/api/system";
-
-import { debounce } from '@/utils'
+import { roleList, SystemMenuSave, SystemMenuList } from "@/api/system";
+import { getToken } from '@/utils/auth'
 
 export default {
-  name: "systemMenulist",
+  name: "systemMeunlist",
   data() {
     return {
       //
-      roleLoading: true,
+      loading: false,
 
       // 防止重复提交
       sureClick: true,
-      pageCount:0,
+      pageCount: 0,
       roleIndex: null,
 
       roleList: [],
@@ -106,8 +99,8 @@ export default {
       checkedList: [],
       saveList: [],
       defaultProps: {
-        children: "children",
-        label: "label",
+        children: "child",
+        label: "name",
       },
       // addList
       addList: [],
@@ -117,7 +110,11 @@ export default {
         size: 15,
         name: "",
         groups: 1,
+        status: 1,
+        pid: process.env.VUE_APP_PID,
       },
+      checkStrictly: true,
+      curItem: {},
     };
   },
   components: {},
@@ -135,48 +132,62 @@ export default {
   methods: {
     // 角色列表
     getRoleList() {
-      this.roleLoading = true;
-      roleList({ ...this.queryParams,pid: process.env.VUE_APP_PID }).then((response) => {
+      this.loading = true;
+      roleList({ ...this.queryParams }).then((response) => {
         if (response.code === 0) {
           this.roleList = response.data.data;
           this.pageCount = response.data.last_page;
-
-          this.roleLoading = false;
         }
+        this.loading = false;
       });
     },
     /** 菜单列表 */
     getList() {
+      this.$refs.tree.setCheckedKeys([]);
+      this.checkStrictly = true;
+      this.loading = true;
+      this.configList = [];
+      this.checkedList = [];
+
       SystemMenuList({
         role_id: this.roleIndex,
         pid: process.env.VUE_APP_PID,
-      }).then((response) => {
-        if (response.code === 0) {
-          const _data = JSON.parse(JSON.stringify(response.data.data)) || [];
-          const _data2 = JSON.parse(JSON.stringify(response.data.data)) || [];
-          let _arr = [];
-          let _arr2 = [];
-          _data.forEach((item) => {
-            if (item.selected) {
-              _arr2.push(item.id);
+      })
+        .then((res) => {
+          console.log(res);
+          const { code, data } = res;
+          if (code == 0 && data && data.data.length) {
+            var dataList = data.data.filter ( item => (item.url))
+            for(var i = 0; i < dataList.length; i++){
+             var arr = dataList[i].child.filter ( item => (item.url))
+             dataList[i].child = arr;
             }
-            if (!item.parent_id) {
-              let _obj = {
-                ...item,
-                children: [],
-              };
+            this.configList  = dataList;
+            this.getTreeItem(data.data);
+            this.loading = false;
+            this.$nextTick(() => {
+              this.$refs.tree.setCheckedKeys(this.checkedList);
 
-              _data2.forEach((val) => {
-                if (item.id === val.parent_id) {
-                  _obj.children.push(val);
-                }
-              });
-              _arr.push(_obj);
-            }
-          });
-          this.configList = _arr;
-          this.checkedList = _arr2;
-          this.saveList = _arr2;
+              const timer = setTimeout(() => {
+                this.checkStrictly = false;
+                clearTimeout(timer);
+              }, 1000);
+            });
+          }
+        })
+        .catch(() => {
+          this.loading = false;
+        });
+
+    },
+
+    getTreeItem(data) {
+      data.forEach((ev) => {
+        if (ev.selected == 1) {
+          this.checkedList.push(ev.id);
+          if (ev.child && ev.child.length) {
+            this.getTreeItem(ev.child);
+          }
         }
       });
     },
@@ -187,100 +198,77 @@ export default {
       this.getRoleList();
     },
 
-    changeRole(id) {
-      let _arr = this.$refs.tree.getCheckedKeys();
-      if (String(this.saveList.sort()) !== String(_arr.sort())) {
-        this.$confirm("您还有配置未保存，确定要切换角色吗？", "提示", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning",
-        }).then(() => {
-          this.roleIndex = id;
-          this.saveList = [];
-        });
-      } else {
-        this.roleIndex = id;
-      }
+    changeRole(item) {
+      // let _arr = this.$refs.tree.getCheckedKeys()
+      this.curItem = item;
+      this.roleIndex = item.id;
     },
     // 角色列表改变
     handleRoleChange(val) {
       this.queryParams.page = val;
       this.getRoleList();
     },
-    // 选中事件
-    clickTreeDeal(curObj, objStatus) {
-      // curObj: 当前节点数据
-      // objStatus： 当前节点的状态，选中为 true ,取消选择为false
-      // this.$refs.tree.getNode(curObj)：获取当前节点的node
-      if (objStatus) {
-        // 当前节点选中，勾选父节点
-        // const parentNode = this.$refs.tree.getNode(curObj).parent;
-        if (curObj.children !== undefined) {
-          curObj.children.forEach((item, i) => {
+    // 点击 tree
+    check(currentObj, treeStatus) {
+      console.log("currentObj", currentObj);
+      console.log("node", treeStatus);
+      // 点击子菜单
+      if (currentObj.parent_id) {
+        const parentNode = this.$refs.tree.getNode(currentObj).parent;
+        // 选中子菜单时 ，手动触发选中父级
+        if (treeStatus.checkedKeys.includes(currentObj.id)) {
+          this.$refs.tree.setChecked(parentNode, true);
+        } else {
+          // 未选中子菜单 且 有至少一个同父 子菜单被选中时，手动触发选中父级
+          if (
+            treeStatus.checkedNodes.find(
+              (item) => item.parent_id === currentObj.parent_id
+            )
+          ) {
+            this.$refs.tree.setChecked(parentNode, true);
+          } else {
+            this.$refs.tree.setChecked(parentNode, false);
+          }
+        }
+      } else {
+        // 点击父菜单
+        // 选中时
+        if (treeStatus.checkedKeys.includes(currentObj.id)) {
+          currentObj.children.forEach((item, i) => {
             this.$refs.tree.setChecked(item, true, true);
           });
-        }
-        // if (parentNode.key !== undefined) {
-        //   this.$refs.tree.setChecked(parentNode, true)
-        // }
-      } else {
-        // 当前节点取消选中，所有子节点取消选中
-        if (curObj.children !== undefined) {
-          curObj.children.forEach((item, i) => {
+        } else {
+          // 未选中时
+          currentObj.children.forEach((item, i) => {
             this.$refs.tree.setChecked(item, false, true);
           });
         }
       }
-      // this.submitForm()
     },
 
-
     /** 提交按钮 */
-    submitForm: debounce(function()
-      {
+    submitForm() {
       if (this.sureClick) {
         // this.sureClick = false;
-        let _checkArr = this.$refs.tree.getCheckedKeys() || [];
-        let _arr = this.configList;
-        _arr.forEach((item) => {
-          if (item.children) {
-            item.children.forEach((val) => {
-              if (
-                _checkArr.find((val2) => {
-                  return val2 == val.id;
-                })
-              ) {
-                _checkArr.push(item.id);
-              }
-            });
-          }
-        });
-        _checkArr = [...new Set(_checkArr)];
+        const parentIds = this.$refs.tree.getHalfCheckedKeys() || [];
+        const childIds = this.$refs.tree.getCheckedKeys() || [];
+        let _checkArr = parentIds.concat(childIds);
 
-        this.configList.forEach((item) => {
-          let _index = _checkArr.findIndex((val) => {
-            return val === item.id;
-          });
-          if (_index + 1) {
-            let _arr2 = item.children.filter((val2) => {
-              return _checkArr.find((val) => {
-                return val === val2.id;
-              });
-            });
-            if (!_arr2.length) {
-              _checkArr.splice(_index, 1);
-            }
-          }
-        });
+
+        this.loading = true;
         SystemMenuSave({
-          role_id: this.roleIndex,
-          column_ids: String(_checkArr),
+          id: this.roleIndex,
+          name: this.curItem.name,
+          column_ids: _checkArr.toString(),
           pid: process.env.VUE_APP_PID,
+          token: getToken(),
         })
           .then((response) => {
+            this.loading = false;
             if (response.code === 0) {
               this.msgSuccess(response.msg);
-              this.saveList = _arr;
+              this.checkStrictly = true;
+              // this.saveList = _arr
             } else {
               this.msgError(response.msg);
             }
@@ -290,8 +278,7 @@ export default {
             this.sureClick = true;
           });
       }
-    },1000)
-
+    },
   },
 };
 </script>
@@ -306,7 +293,8 @@ export default {
     height: 35px;
     line-height: 35px;
     font-size: 16px;
-    text-align: center;
+    // text-align center
+    padding-left: 15px;
     cursor: pointer;
     color: #495060;
     outline: none;
@@ -325,12 +313,26 @@ export default {
 }
 
 .tree {
-  min-height: 620px;
+  max-height: 620px;
+  overflow: auto;
+  text-align: left;
 }
 
 .el-pagination {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  // display flex
+  // align-items center
+  // justify-content center
+}
+</style>
+<style lang="stylus">
+.tree {
+  .el-tree__empty-block {
+    text-align: left !important;
+    margin-top: 29px;
+  }
+
+  .el-tree__empty-text {
+    position: static;
+  }
 }
 </style>

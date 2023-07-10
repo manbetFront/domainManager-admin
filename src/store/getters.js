@@ -13,5 +13,10 @@ const getters = {
   permission_routes: state => state.permission.routes,
   whiteData: state => state.order.whiteData,
   siteDataArr: state => state.user.siteDataArr,
+  alarmReportMqttData: state => state.order.reportMqtt,
+  alarmFixMqttData: state => state.order.fixMqtt,
+  hasAlarmReport: state => state.order.hasAlarmReport,
+  hasAlarmFixData: state => state.order.hasAlarmLog,
+  alarmHandleId: state => state.order.alarmHandleId,
 }
 export default getters

@@ -195,7 +195,7 @@ export function SystemMenuList(obj) {
     ...obj
   }
   return request({
-    url: `/api/vwk/get_column`,
+    url: `/api/vwk/getColumnGeneralTree`,
     method: 'get',
     params
   },'login')
@@ -206,7 +206,7 @@ export function SystemMenuSave(obj) {
     ...obj
   }
   return request({
-    url: `/api/vwk/menu_save`,
+    url: `/api/vwk/group/edit`,
     method: 'post',
     params
   },'login')

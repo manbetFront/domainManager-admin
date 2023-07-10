@@ -38,7 +38,7 @@
       <pagination
         :total="total"
         :page.sync="listQuery.page"
-        :limit.sync="listQuery.page_size"
+        :size.sync="listQuery.page_size"
         @pagination="getList"
       />
     </div>
