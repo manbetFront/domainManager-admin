@@ -12,3 +12,29 @@ export function updateImg(data) {
     }
   })
 }
+
+// 获取当前用户未读消息
+export function getUnreadMsg(obj) {
+  const params = {
+    ...obj
+  }
+  return request({
+    url: '/api/getUnreadMsg',
+    method: 'get',
+    params
+  })
+}
+
+// 上报当前用户已读消息
+export function reportReadMsg(obj) {
+  const params = {
+    ...obj
+  }
+  return request({
+    url: '/api/reportReadMsg',
+    method: 'get',
+    params
+  })
+}
+
+

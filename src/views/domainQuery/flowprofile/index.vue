@@ -29,7 +29,7 @@
           prop="agent_remark"
         />
         <el-table-column label="日访问量" align="center" prop="uv" />
-        <el-table-column label="日注册量" align="center" prop="register_num" />
+        <!-- <el-table-column label="日注册量" align="center" prop="register_num" /> -->
       </el-table>
     </div>
     <!-- 分页 -->
@@ -38,15 +38,15 @@
         <div class="rows">
           访问量总计: {{ total_uv }}
         </div>
-        <div class="rows">
+        <!-- <div class="rows">
           注册量总计: {{ total_register }}
-        </div>
+        </div> -->
       </div>
       <pagination
        class="fr"
         :total="total"
         :page.sync="listQuery.page"
-        :limit.sync="listQuery.page_size"
+        :size.sync="listQuery.size"
         @pagination="getList"
       />
     </div>

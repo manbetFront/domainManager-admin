@@ -12,11 +12,8 @@
       <!-- <el-form-item label="代理线" prop="agent_group">
         <el-input v-model="form.agent_group" />
       </el-form-item> -->
-      <!-- <el-form-item label="主域名" prop="host">
-        <el-input v-model="form.host" />
-      </el-form-item> -->
-      <el-form-item label="跳转域名">
-        <span>{{ form.host }}</span>
+      <el-form-item label="主域名" prop="host">
+        <el-input v-model="form.host" :disabled="form.id > 0" />
       </el-form-item>
       <!-- <el-form-item label="服务器IP">
         <el-input v-model="form.ip" />
@@ -24,7 +21,7 @@
       <el-form-item label="域名备注" prop="remark">
         <el-input v-model="form.remark" />
       </el-form-item>
-      <!-- <el-form-item label="到期时间" prop="host_expire_at">
+      <el-form-item label="到期时间" prop="host_expire_at">
         <el-date-picker
           v-model="form.host_expire_at"
           type="datetime"
@@ -32,13 +29,19 @@
           value-format="yyyy-MM-dd HH:mm:ss"
           class="w-100"
         />
-      </el-form-item> -->
-      <!-- <el-form-item label="状态" prop="status">
+      </el-form-item>
+      <el-form-item label="是否可控" prop="is_control">
+        <el-radio-group v-model="form.is_control">
+          <el-radio :label="1">可控域名</el-radio>
+          <el-radio :label="2">不可控域名</el-radio>
+        </el-radio-group>
+      </el-form-item>
+      <el-form-item label="状态" prop="status" v-if="form.is_control === 1">
         <el-radio-group v-model="form.status">
           <el-radio :label="1">启用</el-radio>
           <el-radio :label="2">禁用</el-radio>
         </el-radio-group>
-      </el-form-item> -->
+      </el-form-item>
     </el-form>
     <div slot="footer">
       <el-button @click="formVisible = false">取消</el-button>
@@ -50,7 +53,7 @@
 </template>
 
 <script>
-import { update } from '@/api/theme/domain/jump'
+import { create, update } from '@/api/theme/domain/main'
 export default {
   name: 'EditDialog',
   components: {},
@@ -64,13 +67,14 @@ export default {
     return {
       dialogTitle: '新增',
       form: {
+        is_control: 1,
         status: 1
       },
       confirming: false,
       dialogRule: {
-        // host: [{ required: true, message: "请输入跳转域名", trigger: 'blur' }],
+        host: [{ required: true, message: "请输入跳转域名", trigger: 'blur' }],
         // ip: [{ required: true, message: "请输入", trigger: 'blur' }],
-        // status: [{ required: true, message: "请选择状态", trigger: ['blur', 'change'] }],
+        status: [{ required: true, message: "请选择状态", trigger: ['blur', 'change'] }],
       },
     }
   },
@@ -96,16 +100,52 @@ export default {
 
   methods: {
     open (rowData, selSite) {
+      if(rowData){
         this.form = { 
           ...rowData, 
           platform: selSite
         }
         this.dialogTitle = "编辑";
-      
+      }else{
+        this.form = {
+          status: 1,
+          is_control: 1,
+          platform: selSite
+        };
+        this.dialogTitle = "新增";
+      }
       this.formVisible = true
     },
     
     handleConfirm () {
+      if(this.form.id){
+        this.edit();
+      }else{
+        this.create();
+      }
+    },
+
+    create(){
+      if(this.confirming)return;
+      this.confirming = true;
+      this.$refs['form'].validate(valid => {
+        if (!valid) {
+          this.confirming = false;
+          return;
+        }
+        create(this.form).then(res => {
+          this.formVisible = false;
+          if (res.code !== 200) {
+            return this.$message.error(res.msg)
+          }
+          this.$parent.getList()
+          this.$message.success("创建成功");
+          this.confirming = false;
+        })
+      })
+    },
+
+    edit(){
       if(this.confirming)return;
       this.confirming = true;
       this.$refs['form'].validate(valid => {

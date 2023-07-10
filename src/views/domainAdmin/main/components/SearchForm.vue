@@ -39,7 +39,7 @@
         </div>
       </el-form-item>
 
-      <!-- <el-form-item label="状态">
+      <el-form-item label="状态">
         <el-select
           v-model="form.status"
           placeholder="全部"
@@ -53,7 +53,7 @@
             :value="dict.value"
           />
         </el-select>
-      </el-form-item> -->
+      </el-form-item>
 
       <el-form-item label="是否可控">
         <el-select
@@ -116,7 +116,6 @@ export default {
       datetimeRange: [],
 
       form: {
-        status: ""
       },
     };
   },
@@ -127,8 +126,8 @@ export default {
         {label: '代理线', value: "agent_group" },
         // { label: '代理code', value: "agent_code" },
         // { label: '推广域名', value: "agent_host" },
-        { label: '跳转域名', value: "host" },
-        // { label: '主域名', value: "main_host" },
+        // { label: '跳转域名', value: "host" },
+        { label: '主域名', value: "url" },
       ];
     },
 
@@ -174,7 +173,9 @@ export default {
   methods: {
     handleQuery() {
       const postData = {...this.form};
-      postData[this.kwType] = this.kwText;
+      if(this.kwText){
+        postData[this.kwType] = this.kwText;
+      }
       if (this.datetimeRange) {
         if (this.dateType == 1) {
           postData.start_at = this.datetimeRange[0];
@@ -192,10 +193,8 @@ export default {
       this.kwType = "agent_group";
       this.kwText = "";
       this.form = { 
-        status: ""
       };
       this.datetimeRange = [];
-      this.dateType == 1
       this.$emit("resetQuery");
     }
   }

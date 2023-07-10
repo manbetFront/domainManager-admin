@@ -11,7 +11,7 @@
 
     <div class="right-menu">
       <template v-if="device !== 'mobile'">
-        <el-popover v-if="getNumber() > 0" placement="bottom" width="230" trigger="hover">
+        <el-popover v-if="getNumber() > 0" placement="bottom" width="280" trigger="hover">
           <div class="pop-div">
             <div v-if="getNum1() > 0">
               <span @click="goPromotionDomain()" class="pop-span">有{{ getNum1() }}个推广域名即将到期</span>
@@ -19,6 +19,20 @@
             <el-divider v-if="getNum1() > 0 && getNum2() > 0"></el-divider>
             <div v-if="getNum2() > 0">
               <span @click="goJumpDomain()"  class="pop-span">有{{ getNum2() }}个跳转域名即将到期</span>
+               <el-divider />
+            </div>
+            <div v-for="item in unReadMsgReportData" :key="item.id" class="pop-ques" @click="goReportList(item)">
+              <p>问题#{{ item.rid }} 待处理：</p>
+              <p>域名：{{ item.host }}</p>
+              <p>问题描述：{{ item.remark }}</p>
+              <el-divider />
+            </div>
+            <div v-for="item in unReadMsgLogData" :key="item.id" class="pop-ques" @click="goReportLog(item)">
+              <p>问题#{{ item.rid }} 已处理：</p>
+              <p>域名：{{ item.host }}</p>
+              <p>问题描述：{{ item.remark }}</p>
+              <p>处理结果备注：{{ item.result }}</p>
+              <el-divider />
             </div>
           </div>
           <div slot="reference" class="info-box">
@@ -75,6 +89,7 @@
 </template>
 
 <script>
+import { getUnreadMsg, reportReadMsg } from "../../api/theme/index"
 import { getRole, getUser } from "@/utils/auth";
 import { mapGetters } from "vuex";
 import Breadcrumb from "@/components/Breadcrumb";
@@ -94,8 +109,22 @@ export default {
     Search,
     RuoYi,
   },
+
+  data() {
+    return {
+       unReadMsgReportData: [],
+       unReadMsgReportNums: 0,
+
+       unReadMsgLogData: [],
+       unReadMsgLogNums: 0,
+    }
+  },
+
   computed: {
-    ...mapGetters(["sidebar", "avatar", "device"]),
+    ...mapGetters(["sidebar", "avatar", "device", 
+      "hasAlarmReport", "hasAlarmFixData", "alarmHandleId",
+      "alarmReportMqttData", "alarmFixMqttData"
+      ]),
 
     ...mapState(["order"]),
 
@@ -117,6 +146,56 @@ export default {
       return decodeURIComponent(getRole());
     },
   },
+
+  watch: {
+    hasAlarmReport: {
+      handler(newVal, oldVal){
+        if(newVal){//有 异常回报列表 权限
+           this.getReportUnreadMsgList();
+        }
+      }
+    },
+
+    hasAlarmFixData: {
+      handler(newVal, oldVal){
+        if(newVal){//有 域名回报处理日志 权限
+           this.getLogUnreadMsgList();
+        }
+      }
+    },
+
+    alarmReportMqttData: {
+      handler(newVal, oldVal){
+        if(newVal){//异常回报列表 mqtt
+           this.unReadMsgReportData = this.unReadMsgReportData.concat(newVal);
+           this.unReadMsgReportNums += newVal.length;
+        }
+      }
+    },
+
+    alarmFixMqttData: {
+      handler(newVal, oldVal){
+        if(newVal){//域名回报处理日志 mqtt
+           this.unReadMsgLogData = this.unReadMsgLogData.concat(newVal);
+           this.unReadMsgLogNums += newVal.length;
+        }
+      }
+    },
+
+    alarmHandleId: {//在 异常回报列表 已经处理异常，需要把提醒里的对应数据删掉
+       handler(newVal, oldVal){
+        console.log('alarmHandleId', newVal)
+        if(newVal && newVal > 0){
+           this.updateReportReadMsg(newVal);
+        }
+      }
+    }
+ },
+
+  created(){
+   
+  },
+
   methods: {
     toggleSideBar() {
       this.$store.dispatch("app/toggleSideBar");
@@ -132,6 +211,28 @@ export default {
         });
       });
     },
+
+    //获取 有异常回报列表权限的运维，未读消息
+    getReportUnreadMsgList() {
+      getUnreadMsg({user_type: 2})
+        .then(response => {
+          if (response.code === 200) {
+            this.unReadMsgReportData = response.msg || [];
+            this.unReadMsgReportNums = response.msg ? response.msg.length : 0;
+          }
+        })
+    },
+
+     //获取有 域名回报处理日志 权限的用户，未读消息
+    getLogUnreadMsgList() {
+      getUnreadMsg({user_type: 1})
+        .then(response => {
+          if (response.code === 200) {
+            this.unReadMsgLogData = response.msg || [];
+            this.unReadMsgLogNums = response.msg ? response.msg.length : 0;
+          }
+        })
+    },
     
     goPromotionDomain(){
       this.$router.push("/domainAdmin/promotion" );
@@ -141,8 +242,46 @@ export default {
       this.$router.push("/domainAdmin/jumpmain" );
     },
 
+    //跳转到 异常回报列表
+    goReportList(item){
+      reportReadMsg({rid: item.rid})
+      .then(response => {
+        if (response.code === 200) {
+          console.log('查看消息')
+          this.getReportUnreadMsgList();
+        }
+      })
+      this.$router.push("/alarmAdmin/reportList" );
+    },
+
+    //跳转到 域名回报处理日志
+    goReportLog(item){
+      reportReadMsg({rid: item.rid})
+        .then(response => {
+          if (response.code === 200) {
+            console.log('查看消息')
+            this.getLogUnreadMsgList();
+          }
+        })
+      this.$router.push("/alarmAdmin/reportLog" );
+    },
+
+    //消息变为已读
+    updateReportReadMsg(id){
+      var item = this.unReadMsgReportData.find(f => f.id === id+'');
+      if(item){
+        reportReadMsg({rid: item.rid})
+          .then(response => {
+            if (response.code === 200) {
+              console.log('查看消息')
+              this.getReportUnreadMsgList();
+            }
+          })
+      }
+    },
+
     getNumber() {
-      return (this.order.numData1 + this.order.numData2 )|| "0";
+      return (this.order.numData1 + this.order.numData2 + this.unReadMsgReportNums + this.unReadMsgLogNums)|| "0";
     },
 
     getNum1() {
@@ -268,9 +407,12 @@ export default {
 }
 
 .pop-div{
-    .pop-span{
+  .pop-span{
     cursor: pointer;
     line-height: 15px;
+  }
+  .pop-ques{
+    cursor: pointer;
   }
 }
 .el-divider--horizontal{

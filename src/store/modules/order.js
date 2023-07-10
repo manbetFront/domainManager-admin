@@ -2,7 +2,9 @@ import { getOrderNotice } from '@/api/pay-check'
 import { setOrderTopic, getOrderTopic } from '@/utils/auth'
 import { withdrawAddressList, /*rateList,*/ /*moneyList,*/ orderList,payChangeRecord } from '@/api/theme/order/rate'
 import { proExpireList } from '@/api/theme/domain/promotion'
-import { jumpExpireList } from '@/api/theme/domain/jump'
+import { mainExpireList } from '@/api/theme/domain/main'
+import { reportList } from '@/api/theme/alarm/index'
+import { getSiteData } from '@/utils/auth'
 
 const state = {
   topic: getOrderTopic(),
@@ -12,7 +14,12 @@ const state = {
   numData2: 0,
   numData3: 0,
   numData4: 0,
-  numData6: 0
+  numData6: 0,
+  reportMqtt: [],
+  fixMqtt: [],
+  hasAlarmReport: false,
+  hasAlarmLog: false,
+  alarmHandleId: 0,
 }
 
 const mutations = {
@@ -40,7 +47,22 @@ const mutations = {
   },
   SET_NUMS6: (state, data) => {
     state.numData6 = data
-  }
+  },
+  SET_REPORT_MQTT:(state, data) => {
+    state.reportMqtt = data
+  },
+  SET_FIX_MQTT:(state, data) => {
+    state.fixMqtt = data
+  },
+  SET_HAS_ALARM_REPORT:(state, data) => {
+    state.hasAlarmReport = data
+  },
+  SET_HAS_ALARM_LOG:(state, data) => {
+    state.hasAlarmLog = data
+  },
+  SET_ALARM_HANDLE_ID:(state, data) => {
+    state.alarmHandleId = data
+  },
 }
 
 const actions = {
@@ -69,20 +91,26 @@ const actions = {
   },
   // 快过期跳转域名列表
   getNumber2({ commit }) {
-    jumpExpireList().then(response => {
+    mainExpireList().then(response => {
       if (response.code === 200) {
         commit('SET_NUMS2', response.data.length)
       }
     })
   },
-  // 虚拟币支付审核
+  // 异常回报列表 未处理数量
   getNumber3({ commit }) {
-    orderList({ page: 1, page_size: 10 }).then(response => {
-      if (response.status === 200) {
+    reportList({ platform: getSiteData().toString()}).then(response => {
+      if (response.code === 200) {
         commit('SET_NUMS3', response.data.total)
       }
     })
   },
+
+  //刷新 异常回报列表 未处理数量
+  refreshNumber3({ commit }, total) {
+    commit('SET_NUMS3', total)
+  },
+
   // 支付金额变更记录
   getNumber4({ commit }) {
     payChangeRecord({ page: 1, page_size: 10, if_change_num: 2 }).then(response => {
@@ -105,7 +133,27 @@ const actions = {
           reject(error)
         })
     })
-  }
+  },
+
+  setReportMqtt({ commit }, data) {
+    commit('SET_REPORT_MQTT', data)
+  },
+
+  setFixMqtt({ commit }, data) {
+    commit('SET_FIX_MQTT', data)
+  },
+
+  setHasAlarmReport({ commit }, data) {
+    commit('SET_HAS_ALARM_REPORT', data)
+  },
+
+  setHasAlarmLog({ commit }, data) {
+    commit('SET_HAS_ALARM_LOG', data)
+  },
+
+  setAlarmHandleId({ commit }, data) {
+    commit('SET_ALARM_HANDLE_ID', data)
+  },
 }
 
 export default {
