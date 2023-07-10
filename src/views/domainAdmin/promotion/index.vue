@@ -34,7 +34,7 @@
         <el-table-column prop="main_host_detail" label="跳转域名" align="center" width="220"/>
         <el-table-column label="主域名" align="center" width="150">
           <template slot-scope="{ row }">
-           <a class="alink" @click="handleLink(row.main_host)">{{ row.main_host }}</a>
+           <a class="alink" @click="handleMainLink(row.main_host)">{{ row.main_host }}</a>
           </template>
         </el-table-column>
         <el-table-column prop="remark" label="域名备注" align="center" width="150"/>
@@ -267,6 +267,10 @@ export default {
 
     handleLink(link) {
       window.open("https://" + link);
+    },
+
+    handleMainLink(link) {
+      window.open("https://www." + link);
     },
   }
 };
