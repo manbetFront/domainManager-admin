@@ -46,7 +46,7 @@
        class="fr"
         :total="total"
         :page.sync="listQuery.page"
-        :limit.sync="listQuery.page_size"
+        :size.sync="listQuery.size"
         @pagination="getList"
       />
     </div>
