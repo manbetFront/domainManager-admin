@@ -15,11 +15,11 @@
           <div class="pop-div">
             <div v-if="getNum1() > 0">
               <span @click="goPromotionDomain()" class="pop-span">有{{ getNum1() }}个推广域名即将到期</span>
+              <el-divider />
             </div>
-            <el-divider v-if="getNum1() > 0 && getNum2() > 0"></el-divider>
             <div v-if="getNum2() > 0">
               <span @click="goJumpDomain()"  class="pop-span">有{{ getNum2() }}个跳转域名即将到期</span>
-               <el-divider />
+              <el-divider />
             </div>
             <div v-for="item in unReadMsgReportData" :key="item.id" class="pop-ques" @click="goReportList(item)">
               <p>问题#{{ item.rid }} 待处理：</p>
