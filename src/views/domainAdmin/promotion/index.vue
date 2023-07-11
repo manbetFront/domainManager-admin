@@ -28,13 +28,13 @@
         <el-table-column prop="agent_code" label="代理code" align="center" />
         <el-table-column label="推广域名" align="center" width="150">
           <template slot-scope="{ row }">
-           <a class="alink" @click="handleLink(row.agent_host)">{{ row.agent_host }}</a>
+           <a class="alink" @click="handleLink(row)">{{ row.agent_host }}</a>
           </template>
         </el-table-column>
         <el-table-column prop="main_host_detail" label="跳转域名" align="center" width="220"/>
         <el-table-column label="主域名" align="center" width="150">
           <template slot-scope="{ row }">
-           <a class="alink" @click="handleMainLink(row.main_host)">{{ row.main_host }}</a>
+           <a class="alink" @click="handleMainLink(row)">{{ row.main_host }}</a>
           </template>
         </el-table-column>
         <el-table-column prop="remark" label="域名备注" align="center" width="150"/>
@@ -265,12 +265,20 @@ export default {
       this.$refs.reportDialog.open(params, this.tabActive);
     },
 
-    handleLink(link) {
-      window.open("https://" + link);
+    handleLink(row) {
+      if(row.is_control === 1){
+        window.open("https://www." + row.agent_host);
+      }else{
+        window.open("https://" + row.agent_host);
+      }
     },
 
-    handleMainLink(link) {
-      window.open("https://www." + link);
+    handleMainLink(row) {
+      if(row.is_control ===1){
+        window.open("https://www." + row.main_host);
+      }else{
+        window.open("https://" + row.main_host);
+      }
     },
   }
 };
