@@ -266,15 +266,11 @@ export default {
     },
 
     handleLink(row) {
-      if(row.is_control === 1){
-        window.open("https://www." + row.agent_host);
-      }else{
-        window.open("https://" + row.agent_host);
-      }
+      window.open("https://" + row.agent_host);
     },
 
     handleMainLink(row) {
-      if(row.is_control ===1){
+      if(row.is_control === 1){
         window.open("https://www." + row.main_host);
       }else{
         window.open("https://" + row.main_host);
