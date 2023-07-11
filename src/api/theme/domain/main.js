@@ -3,7 +3,7 @@ import qs from 'qs'
 import { getSiteData,getUser } from '@/utils/auth'
 
 // 主域名设置列表
-export function list(obj) {
+export function mainList(obj) {
   const params = {
     ...obj
   }
