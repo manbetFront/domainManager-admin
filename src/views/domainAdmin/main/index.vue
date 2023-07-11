@@ -106,7 +106,7 @@
 
 <script>
 import {
-  list,
+  mainList,
   update,
   del
 } from "@/api/theme/domain/main";
@@ -178,7 +178,7 @@ export default {
     getList() {
       this.loading = true;
       this.$store.dispatch("order/getNumber2");
-      list({ ...this.listQuery })
+      mainList({ ...this.listQuery })
         .then(response => {
           if (response.code === 200) {
             const data = response.data || [];
