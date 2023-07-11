@@ -124,6 +124,7 @@ import {
   update,
   del
 } from "@/api/theme/domain/promotion";
+import { mainList } from "@/api/theme/domain/main";
 import { getSiteData } from '@/utils/auth'
 import Pagination from "@/components/Pagination";
 import SearchForm from "./components/SearchForm";
@@ -205,6 +206,24 @@ export default {
           this.loading = false;
         });
     },
+
+     // 查询主域名 
+    async getMainList(host) {
+      const res =  await mainList({ 
+          url: host,
+          platform: this.tabActive,
+        })
+      if(res.code === 200) {
+          const data = res.data || [];
+          const mainData = data.data || [];
+          if(mainData.length > 0)
+          {
+            return mainData[0];
+          }
+      }
+      return null;
+    },
+
     // 编辑
     handleEdit(rowData) {
       this.editDialog = true;
@@ -269,9 +288,10 @@ export default {
       window.open("https://" + row.agent_host);
     },
 
-    handleMainLink(row) {
-      if(row.is_control === 1){
-        window.open("https://www." + row.main_host);
+    async handleMainLink(row) {
+      var mainItem = await this.getMainList(row.main_host);
+      if(mainItem && mainItem.is_control === 1){
+          window.open("https://www." + row.main_host);
       }else{
         window.open("https://" + row.main_host);
       }
