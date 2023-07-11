@@ -15,7 +15,7 @@ export default {
 
     createConnection(top) {
       this.client = mqtt.connect("wss://mqtt-ol.kletuzow.com:443/mqtt");
-      var env = process.env.NODE_ENV === "development" ? "dev" : "pro";
+      var env = process.env.NODE_ENV === "development" ? "dev" : "prod";
       var topic = "domain-" + env + '/' + top;
       // 订阅
       this.client.on("connect", () => {
