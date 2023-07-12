@@ -31,7 +31,11 @@
            <a class="alink" @click="handleLink(row)">{{ row.agent_host }}</a>
           </template>
         </el-table-column>
-        <el-table-column prop="main_host_detail" label="跳转域名" align="center" width="220"/>
+        <el-table-column label="跳转域名" align="center" width="220">
+         <template slot-scope="{ row }">
+           <a class="alink" @click="handleJumpLink(row)">{{ row.main_host_detail }}</a>
+          </template>
+        </el-table-column>
         <el-table-column label="主域名" align="center" width="150">
           <template slot-scope="{ row }">
            <a class="alink" @click="handleMainLink(row)">{{ row.main_host }}</a>
@@ -286,6 +290,10 @@ export default {
 
     handleLink(row) {
       window.open("https://" + row.agent_host);
+    },
+
+    handleJumpLink(row) {
+      window.open(row.main_host_detail);
     },
 
     async handleMainLink(row) {
